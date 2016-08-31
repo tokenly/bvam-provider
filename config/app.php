@@ -166,6 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Tokenly\ConsulHealthDaemon\ServiceProvider\ConsulHealthDaemonServiceProvider::class,
         Tokenly\LaravelApiProvider\APIServiceProvider::class,
 
         /*
