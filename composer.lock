@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d4872474d01ce11bb3479df2a9b0fec6",
-    "content-hash": "bfd479cdc35c9c78f0f82bd02e16cbd5",
+    "hash": "c9bd38f189a887e2cfd176aff5b44756",
+    "content-hash": "2758b78588297a8a4f169039540b182a",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2706,6 +2706,48 @@
             ],
             "description": "An event logger provider for Laravel.",
             "time": "2016-06-15 12:42:41"
+        },
+        {
+            "name": "tokenly/laravel-xchain-receive-queue",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tokenly/laravel-xchain-receive-queue.git",
+                "reference": "014b2bef5b8f5636e535234b720aee9766fcb253"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tokenly/laravel-xchain-receive-queue/zipball/014b2bef5b8f5636e535234b720aee9766fcb253",
+                "reference": "014b2bef5b8f5636e535234b720aee9766fcb253",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "tokenly/laravel-event-log": ">=1",
+                "tokenly/xchain-client": "^0.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tokenly\\XchainReceiveQueue\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devon Weller",
+                    "email": "devon@tokenly.com",
+                    "homepage": "http://tokenly.com"
+                }
+            ],
+            "description": "A library to queue received XChain notifications",
+            "time": "2016-09-03 17:37:44"
         },
         {
             "name": "tokenly/token-generator",
