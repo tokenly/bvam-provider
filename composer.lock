@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ffbbcd56c8b49d1c94b662d9e2d60fee",
-    "content-hash": "56ffe06f0c0c673f93a121d5ad8e083e",
+    "hash": "d4872474d01ce11bb3479df2a9b0fec6",
+    "content-hash": "bfd479cdc35c9c78f0f82bd02e16cbd5",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -576,6 +576,72 @@
                 "tokenizer"
             ],
             "time": "2015-12-05 17:17:57"
+        },
+        {
+            "name": "justinrainbow/json-schema",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/justinrainbow/json-schema.git",
+                "reference": "2128f9de8be4600c3394d94c3918faf67157b76b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/2128f9de8be4600c3394d94c3918faf67157b76b",
+                "reference": "2128f9de8be4600c3394d94c3918faf67157b76b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "json-schema/json-schema-test-suite": "1.2.0",
+                "phpdocumentor/phpdocumentor": "~2",
+                "phpunit/phpunit": "^4.8.22"
+            },
+            "bin": [
+                "bin/validate-json"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JsonSchema\\": "src/JsonSchema/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bruno Prieto Reis",
+                    "email": "bruno.p.reis@gmail.com"
+                },
+                {
+                    "name": "Justin Rainbow",
+                    "email": "justin.rainbow@gmail.com"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
+                    "name": "Robert Schönthal",
+                    "email": "seroscho@googlemail.com"
+                }
+            ],
+            "description": "A library to validate a json schema.",
+            "homepage": "https://github.com/justinrainbow/json-schema",
+            "keywords": [
+                "json",
+                "schema"
+            ],
+            "time": "2016-08-26 12:45:49"
         },
         {
             "name": "laravel/framework",
@@ -1352,6 +1418,44 @@
                 "test"
             ],
             "time": "2016-01-20 17:35:46"
+        },
+        {
+            "name": "stephenhill/base58",
+            "version": "v1.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stephen-hill/base58php.git",
+                "reference": "75ef7128303def7629d2a4bf9ea9dc378140507c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stephen-hill/base58php/zipball/75ef7128303def7629d2a4bf9ea9dc378140507c",
+                "reference": "75ef7128303def7629d2a4bf9ea9dc378140507c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1",
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StephenHill\\": "src/",
+                    "StephenHill\\Benchmarks\\": "benchmarks/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Stephen Hill",
+                    "email": "stephen@gatekiller.co.uk"
+                }
+            ],
+            "description": "Base58 Encoding and Decoding Library for PHP",
+            "time": "2016-07-20 20:34:07"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2386,6 +2490,46 @@
             "time": "2016-07-17 14:02:08"
         },
         {
+            "name": "tokenly/bitcoin-currency-lib",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tokenly/bitcoin-currency-lib.git",
+                "reference": "439cbd4fa4a2cc7684b9e08b2ce6b0a73ee59112"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tokenly/bitcoin-currency-lib/zipball/439cbd4fa4a2cc7684b9e08b2ce6b0a73ee59112",
+                "reference": "439cbd4fa4a2cc7684b9e08b2ce6b0a73ee59112",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Tokenly\\CurrencyLib": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devon Weller",
+                    "email": "devon@tokenly.com",
+                    "homepage": "http://tokenly.com"
+                }
+            ],
+            "description": "A bitcoin currency and quantity value library",
+            "time": "2016-02-24 02:17:54"
+        },
+        {
             "name": "tokenly/consul-health-daemon",
             "version": "v0.2.0",
             "source": {
@@ -2602,6 +2746,49 @@
             ],
             "description": "A library to generate random strings",
             "time": "2014-12-03 03:55:02"
+        },
+        {
+            "name": "tokenly/xchain-client",
+            "version": "v0.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tokenly/xchain-client.git",
+                "reference": "62a021b1ec73e6160b899be7fa2c4ca0f43ba680"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tokenly/xchain-client/zipball/62a021b1ec73e6160b899be7fa2c4ca0f43ba680",
+                "reference": "62a021b1ec73e6160b899be7fa2c4ca0f43ba680",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6",
+                "php": ">=5.5.0",
+                "tokenly/bitcoin-currency-lib": "^1.1",
+                "tokenly/hmac-auth": "^0.2|^1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Tokenly\\XChainClient": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devon Weller",
+                    "email": "dweller@tokenly.com",
+                    "homepage": "http://tokenly.com"
+                }
+            ],
+            "description": "A library",
+            "time": "2016-07-26 02:08:35"
         },
         {
             "name": "vlucas/phpdotenv",

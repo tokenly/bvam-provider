@@ -24,5 +24,9 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="DATABASE_DRIVER" value="testing"/>
+        <env name="MAIL_DRIVER" value="log"/>
+
+        <env name="SITE_HOST" value="http://bvam-provider.dev"/>
     </php>
 </phpunit>

@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind('dateprovider', function($app) {
+            return app('App\Providers\DateProvider\DateProvider');
+        });
     }
 }

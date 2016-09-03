@@ -168,6 +168,9 @@ return [
          */
         Tokenly\ConsulHealthDaemon\ServiceProvider\ConsulHealthDaemonServiceProvider::class,
         Tokenly\LaravelApiProvider\APIServiceProvider::class,
+        Tokenly\LaravelEventLog\EventLogServiceProvider::class,
+        Tokenly\XChainClient\XChainServiceProvider::class,
+        Tokenly\XchainReceiveQueue\Provider::class,
 
         /*
          * Application Service Providers...

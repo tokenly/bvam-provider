@@ -2,12 +2,23 @@
 
 abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 {
+
+    protected $use_database = false;
+
     /**
      * The base URL to use while testing the application.
      *
      * @var string
      */
     protected $baseUrl = 'http://localhost';
+
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        if ($this->use_database) { $this->setUpDb(); }
+    }
 
     /**
      * Creates the application.
@@ -22,4 +33,15 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
 
         return $app;
     }
+
+
+    public function setUpDb()
+    {
+        $this->app['Illuminate\Contracts\Console\Kernel']->call('migrate');
+    }
+
+    public function teardownDb()
+    {
+    }
+
 }
