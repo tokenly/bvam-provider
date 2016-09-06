@@ -20,6 +20,12 @@ class MonitoringHandler {
     public function handleConsoleHealthCheck() {
         // check MySQL
         $this->services_checker->checkMySQLConnection();
+
+        // check that pending queue sizes aren't too big
+        $this->services_checker->checkQueueSizes([
+            'default' => 5,
+        ]);
+
     }
 
     ////////////////////////////////////////////////////////////////////////

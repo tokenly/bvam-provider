@@ -16,3 +16,14 @@ use Illuminate\Foundation\Inspiring;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
+
+
+Artisan::command('bvam-devel:queuejob', function () {
+    $payload = json_decode(app('XchainQueueHelper')->buildReceiveNotification()['payload'], true);
+    $job_class = config('xchainqueue.jobClass');
+    $job = new $job_class($payload);
+    $this->info('dispatching new '.(new \ReflectionClass($job))->getShortName());
+    dispatch($job);
+
+    $this->comment('done');
+})->describe('Queue a sample job');;

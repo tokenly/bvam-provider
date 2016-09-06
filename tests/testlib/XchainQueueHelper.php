@@ -64,7 +64,69 @@ class XchainQueueHelper
             'txid' => '13277080111fdd1d6969d8dcdafdb8d4b84907d5c89802437927b1f79973b621',
         ];
 
-        $out = array_merge($template, $notification_overrides);
+        $out = array_replace_recursive($template, $notification_overrides);
+
+        return $this->buildNotification($out);
+    }
+
+    public function buildConfirmedIssuanceNotification($notification_overrides=[], $bvam_hash=null) {
+        $notification_overrides['confirmed']     = true;
+        $notification_overrides['confirmations'] = 2;
+        return $this->buildIssuanceNotification($notification_overrides, $bvam_hash);
+    }
+
+    public function buildIssuanceNotification($notification_overrides=[], $bvam_hash=null) {
+        $template = [
+            'asset' => 'CATEGORYID',
+            'bitcoinTx' => [
+                'txid' => '1111111122222222111111112222222211111111222222221111111122222222',
+                'fees' => 0.00014575999999999999,
+                'feesSat' => 14576,
+            ],
+            'confirmationTime' => '',
+            'confirmations' => 0,
+            'confirmed' => false,
+            'counterpartyTx' => [
+                'asset' => 'CATEGORYID',
+                'call_date' => 0,
+                'call_price' => 0,
+                'callable' => false,
+                'description' => 'http://bvam-provider.dev/{TEMPLATE}.json',
+                'destinations' => [
+                    0 => '1AuTJDwH6xNqxRLEjPB7m86dgmerYVQ5G1',
+                ],
+                'divisible' => false,
+                'dustSize' => 0,
+                'dustSizeSat' => 0,
+                'quantity' => 1,
+                'quantitySat' => 100000000,
+                'sources' => [
+                    0 => '1AuTJDwH6xNqxRLEjPB7m86dgmerYVQ5G1',
+                ],
+                'type' => 'issuance',
+            ],
+            'destinations' => [
+                0 => '1AuTJDwH6xNqxRLEjPB7m86dgmerYVQ5G1',
+            ],
+            'event' => 'issuance',
+            'network' => 'counterparty',
+            'notifiedAddress' => '1AuTJDwH6xNqxRLEjPB7m86dgmerYVQ5G1',
+            'notifiedAddressId' => '41850433-6290-4392-98d1-ef427974d521',
+            'quantity' => 1,
+            'quantitySat' => 100000000,
+            'sources' => [
+                0 => '1AuTJDwH6xNqxRLEjPB7m86dgmerYVQ5G1',
+            ],
+            'transactionFingerprint' => '8ccf0f98efd58839fc0318c6e1bd72e5db7e7a02725cfc9e7f2b7deabd25da62',
+            'transactionTime' => '2016-09-03T13:08:19+0000',
+            'txid' => '1111111122222222111111112222222211111111222222221111111122222222',
+        ];
+
+        if ($bvam_hash === null) { $bvam_hash = 'template'; }
+        array_set($template, 'counterpartyTx.description', str_replace('{TEMPLATE}', $bvam_hash, array_get($template, 'counterpartyTx.description')));
+
+        $out = array_replace_recursive($template, $notification_overrides);
+
 
         return $this->buildNotification($out);
     }

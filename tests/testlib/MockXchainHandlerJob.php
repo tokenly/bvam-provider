@@ -1,11 +1,11 @@
 <?php 
 
-use Tokenly\XchainReceiveQueue\Jobs\XchainReceive;
+use Tokenly\XchainReceiveQueue\Jobs\XchainReceiveJob;
 
 /**
 * XChain MockXchainHandlerJob
 */
-class MockXchainHandlerJob extends XchainReceive
+class MockXchainHandlerJob extends XchainReceiveJob
 {
 
     public static function getCalledEvents() {

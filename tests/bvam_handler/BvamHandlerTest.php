@@ -137,4 +137,8 @@ class BvamHandlerTest extends TestCase
 
     }
 
+    public function testCategoryUpdateWithDifferentIssuerIsInvalid() {
+        $this->markTestIncomplete();
+    }
+
 }

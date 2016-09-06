@@ -123,7 +123,7 @@ class BvamUtil
         
         $bvam = $repository->findByHash($hash);
         if (!$bvam) {
-            // not found...
+            EventLog::logError('bvam.confirm.hashNotFound', "The asset $asset_from_transaction was not confirmed because the hash {$hash} was not found");
             return false;
         }
 
@@ -205,6 +205,104 @@ class BvamUtil
 
         // return the updated bvam
         return $bvam_category;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public function parseBvamIssuanceDescription($description) {
+        $bvam_hash               = null;
+        $enhanced_asset_info_url = null;
+        $type                    = null;
+        $host                    = null;
+        $uri                     = null;
+
+        $url_pieces = parse_url($description);
+        if (isset($url_pieces['scheme']) AND $url_pieces['scheme']) {
+            $host = isset($url_pieces['host']) ? $url_pieces['host'] : null;
+
+            if (isset($url_pieces['scheme']) AND isset($url_pieces['host']) AND isset($url_pieces['path'])) {
+                $uri = 
+                    $url_pieces['scheme'].'://'
+                    .$url_pieces['host']
+                    .(isset($url_pieces['port']) ? ':'.$url_pieces['port'] : '')
+                    .$url_pieces['path']
+                    ;
+
+            }
+
+            $filename = isset($url_pieces['path']) ? basename($url_pieces['path']) : null;
+            $filename_data = $this->parseBvamFilename($filename);
+            if ($filename_data) {
+                if ($filename_data['type'] == 'bvam') {
+                    $type = 'bvam';
+                    $bvam_hash = $filename_data['bvam_hash'];
+                } else if ($filename_data['type'] == 'enhanced') {
+                    if (in_array($url_pieces['scheme'], ['http','https'])) {
+                        // assume enhanced asset info
+                        $type = 'enhanced';
+                        $uri = $description;
+                    }
+                }
+            }
+        }
+
+        return [
+            'type'      => $type,
+            'bvam_hash' => $bvam_hash,
+            'host'      => $host,
+            'uri'       => $uri,
+        ];
+
+    }
+
+    public function parseBvamFilename($filename) {
+        if ($filename === null) { return null; }
+
+        if (strtolower(substr($filename, -5)) == '.json') {
+            $filename_stub = substr($filename, 0, -5);
+            if (strlen($filename_stub) >= 28 AND strlen($filename_stub) <= 30) {
+                $first_letter = substr($filename_stub, 0, 1);
+                if ($first_letter == 'T') {
+                    return [
+                        'type'      => 'bvam',
+                        'bvam_hash' => $filename_stub,
+                    ];
+                }
+                if ($first_letter == 'S') {
+                    return [
+                        'type'      => 'category',
+                        'bvam_hash' => $filename_stub,
+                    ];
+                }
+            }
+
+            return [
+                'type'      => 'enhanced',
+                'bvam_hash' => null,
+            ];
+        }
+
+        return null;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public function isBvamProviderDomain($domain) {
+        if (!isset($this->provider_domains_map)) {
+            $this->provider_domains_map = [];
+            foreach (explode(',', env('MY_BVAM_PROVIDER_DOMAINS', '')) as $value) {
+                $value = strtolower(trim($value));
+                if (strlen($value) > 0) {
+                    $this->provider_domains_map[$value] = true;
+                }
+            }
+        }
+
+        return isset($this->provider_domains_map[strtolower($domain)]);
+    }
+
+    public function scrapeBvam($external_uri) {
+        throw new Exception("scrapeBvam is unimplemented", 1);
     }
 
     // ------------------------------------------------------------------------

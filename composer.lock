@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c9bd38f189a887e2cfd176aff5b44756",
-    "content-hash": "2758b78588297a8a4f169039540b182a",
+    "hash": "d3cce420744d9d9e46bc9641f3c3353a",
+    "content-hash": "6235767ba0e8e99f9ab84baff6c049e1",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1120,6 +1120,56 @@
                 "random"
             ],
             "time": "2016-04-03 06:00:07"
+        },
+        {
+            "name": "pda/pheanstalk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pda/pheanstalk.git",
+                "reference": "03119b35e018f98929b32203d613749e2e6d8673"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pda/pheanstalk/zipball/03119b35e018f98929b32203d613749e2e6d8673",
+                "reference": "03119b35e018f98929b32203d613749e2e6d8673",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Pheanstalk\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Annesley",
+                    "email": "paul@annesley.cc",
+                    "homepage": "http://paul.annesley.cc/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP client for beanstalkd queue",
+            "homepage": "https://github.com/pda/pheanstalk",
+            "keywords": [
+                "beanstalkd"
+            ],
+            "time": "2016-07-24 23:57:58"
         },
         {
             "name": "psr/http-message",
@@ -2665,6 +2715,46 @@
             ],
             "description": "An API service provider for Laravel",
             "time": "2016-08-31 18:43:32"
+        },
+        {
+            "name": "tokenly/laravel-blocking-beanstalkd",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tokenly/laravel-blocking-beanstalkd.git",
+                "reference": "a3af6aebd5718409a4cf856e47d5dd1aefd2dd54"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tokenly/laravel-blocking-beanstalkd/zipball/a3af6aebd5718409a4cf856e47d5dd1aefd2dd54",
+                "reference": "a3af6aebd5718409a4cf856e47d5dd1aefd2dd54",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Tokenly\\LaravelBlockingBeanstalkd": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devon Weller",
+                    "email": "devon@tokenly.co",
+                    "homepage": "http://devonweller.com"
+                }
+            ],
+            "description": "A library",
+            "time": "2015-04-18 16:25:40"
         },
         {
             "name": "tokenly/laravel-event-log",
@@ -4403,7 +4493,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "tokenly/laravel-api-provider": 20
+        "tokenly/laravel-api-provider": 20,
+        "tokenly/laravel-blocking-beanstalkd": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

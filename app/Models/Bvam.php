@@ -16,6 +16,12 @@ class Bvam extends APIModel {
 
     // ------------------------------------------------------------------------
 
+    public function isActive() {
+        return ($this['status'] == self::STATUS_CONFIRMED);
+    }
+
+    // ------------------------------------------------------------------------
+
     public function getFilenameAttribute() {
         return $this['hash'].'.json';
     }

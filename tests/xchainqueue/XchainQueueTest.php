@@ -28,5 +28,4 @@ class XchainQueueTest extends TestCase
     }
 
 
-
 }

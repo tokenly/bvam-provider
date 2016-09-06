@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Tokenly\LaravelApiProvider\Filter\IndexRequestFilter;
 use Tokenly\LaravelApiProvider\Helpers\APIControllerHelper;
+use Exception;
 
 class BvamController extends ApiController
 {
@@ -64,7 +65,7 @@ class BvamController extends ApiController
     public function createCategory(Request $request, APIControllerHelper $helper) {
         // if category is an array - convert it to a string before validation
         $category_input = $request->input('category');
-        Log::debug("\$category_input=".json_encode($category_input, 192));
+        // Log::debug("\$category_input=".json_encode($category_input, 192));
         if ($category_input AND is_array($category_input)) {
             $category_string = json_encode($category_input, 192);
             $request->merge(['category' => $category_string]);

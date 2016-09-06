@@ -155,7 +155,7 @@ return [
         Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
-        Illuminate\Queue\QueueServiceProvider::class,
+        // Illuminate\Queue\QueueServiceProvider::class, <-- overidden by BlockingBeanstalkServiceProvider
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
@@ -166,6 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Tokenly\LaravelBlockingBeanstalkd\BlockingBeanstalkServiceProvider::class,
         Tokenly\ConsulHealthDaemon\ServiceProvider\ConsulHealthDaemonServiceProvider::class,
         Tokenly\LaravelApiProvider\APIServiceProvider::class,
         Tokenly\LaravelEventLog\EventLogServiceProvider::class,

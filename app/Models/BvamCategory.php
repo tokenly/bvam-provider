@@ -14,6 +14,14 @@ class BvamCategory extends APIModel {
 
     protected $api_attributes = ['filename','uri','category_id','title','version','txid','owner','last_updated',];
 
+    // ------------------------------------------------------------------------
+
+    public function isActive() {
+        return ($this['status'] == self::STATUS_CONFIRMED);
+    }
+
+    // ------------------------------------------------------------------------
+
     public function getFilenameAttribute() {
         return $this['hash'].'.json';
     }

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_DRIVER', 'sync'),
+    'default' => env('QUEUE_DRIVER', 'beanstalkd'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,26 +41,19 @@ return [
             'retry_after' => 90,
         ],
 
+        'blockingbeanstalkd' => [
+            'driver'      => env('BEANSTALK_DRIVER', 'blockingbeanstalkd'),
+            'host'        => env('BEANSTALK_HOST', '127.0.0.1'),
+            'queue'       => 'default',
+            'port'        => env('BEANSTALK_PORT', 11300),
+            'retry_after' => 300,
+        ],
+
         'beanstalkd' => [
-            'driver' => 'beanstalkd',
-            'host' => 'localhost',
-            'queue' => 'default',
-            'retry_after' => 90,
-        ],
-
-        'sqs' => [
-            'driver' => 'sqs',
-            'key' => 'your-public-key',
-            'secret' => 'your-secret-key',
-            'prefix' => 'https://sqs.us-east-1.amazonaws.com/your-account-id',
-            'queue' => 'your-queue-name',
-            'region' => 'us-east-1',
-        ],
-
-        'redis' => [
-            'driver' => 'redis',
-            'connection' => 'default',
-            'queue' => 'default',
+            'driver'      => env('BEANSTALK_DRIVER', 'beanstalkd'),
+            'host'        => env('BEANSTALK_HOST', '127.0.0.1'),
+            'port'        => env('BEANSTALK_PORT', 11300),
+            'queue'       => 'default',
             'retry_after' => 90,
         ],
 
