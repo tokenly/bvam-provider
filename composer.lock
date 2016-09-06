@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d3cce420744d9d9e46bc9641f3c3353a",
-    "content-hash": "6235767ba0e8e99f9ab84baff6c049e1",
+    "hash": "42836b69cea41368d1f8c3cef8f04211",
+    "content-hash": "d26425ab75527f889fe86d4855ef7fad",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2799,16 +2799,16 @@
         },
         {
             "name": "tokenly/laravel-xchain-receive-queue",
-            "version": "v0.0.1",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tokenly/laravel-xchain-receive-queue.git",
-                "reference": "014b2bef5b8f5636e535234b720aee9766fcb253"
+                "reference": "c71015ad32630608e3edb5867aa014f8219b43bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tokenly/laravel-xchain-receive-queue/zipball/014b2bef5b8f5636e535234b720aee9766fcb253",
-                "reference": "014b2bef5b8f5636e535234b720aee9766fcb253",
+                "url": "https://api.github.com/repos/tokenly/laravel-xchain-receive-queue/zipball/c71015ad32630608e3edb5867aa014f8219b43bd",
+                "reference": "c71015ad32630608e3edb5867aa014f8219b43bd",
                 "shasum": ""
             },
             "require": {
@@ -2837,7 +2837,7 @@
                 }
             ],
             "description": "A library to queue received XChain notifications",
-            "time": "2016-09-03 17:37:44"
+            "time": "2016-09-06 19:02:28"
         },
         {
             "name": "tokenly/token-generator",
