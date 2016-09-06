@@ -2678,12 +2678,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tokenly/laravel-api-provider.git",
-                "reference": "93c6aab1562d742df3bff35e6ba900ec36c417c2"
+                "reference": "ec37164ff6f16340e0338aeaf8a3615f18fde298"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tokenly/laravel-api-provider/zipball/93c6aab1562d742df3bff35e6ba900ec36c417c2",
-                "reference": "93c6aab1562d742df3bff35e6ba900ec36c417c2",
+                "url": "https://api.github.com/repos/tokenly/laravel-api-provider/zipball/ec37164ff6f16340e0338aeaf8a3615f18fde298",
+                "reference": "ec37164ff6f16340e0338aeaf8a3615f18fde298",
                 "shasum": ""
             },
             "require": {
@@ -2714,7 +2714,7 @@
                 }
             ],
             "description": "An API service provider for Laravel",
-            "time": "2016-08-31 18:43:32"
+            "time": "2016-09-06 18:47:51"
         },
         {
             "name": "tokenly/laravel-blocking-beanstalkd",
