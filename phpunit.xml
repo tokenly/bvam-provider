@@ -28,5 +28,9 @@
         <env name="MAIL_DRIVER" value="log"/>
 
         <env name="SITE_HOST" value="http://bvam-provider.dev"/>
+        <env name="MY_BVAM_PROVIDER_DOMAINS" value="bvam-provider.dev"/>
+
+        <env name="XCHAIN_API_KEY" value="TEST"/>
+        <env name="XCHAIN_API_TOKEN" value="TEST"/>
     </php>
 </phpunit>
