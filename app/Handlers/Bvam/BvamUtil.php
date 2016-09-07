@@ -216,19 +216,12 @@ class BvamUtil
         $host                    = null;
         $uri                     = null;
 
-        $url_pieces = parse_url($description);
-        if (isset($url_pieces['scheme']) AND $url_pieces['scheme']) {
-            $host = isset($url_pieces['host']) ? $url_pieces['host'] : null;
+        $uri_data = $this->resolveURLFromDescription($description);
 
-            if (isset($url_pieces['scheme']) AND isset($url_pieces['host']) AND isset($url_pieces['path'])) {
-                $uri = 
-                    $url_pieces['scheme'].'://'
-                    .$url_pieces['host']
-                    .(isset($url_pieces['port']) ? ':'.$url_pieces['port'] : '')
-                    .$url_pieces['path']
-                    ;
-
-            }
+        if ($uri_data['uri']) {
+            $uri        = $uri_data['uri'];
+            $host       = $uri_data['host'];
+            $url_pieces = $uri_data['url_pieces'];
 
             $filename = isset($url_pieces['path']) ? basename($url_pieces['path']) : null;
             $filename_data = $this->parseBvamFilename($filename);
@@ -236,13 +229,21 @@ class BvamUtil
                 if ($filename_data['type'] == 'bvam') {
                     $type = 'bvam';
                     $bvam_hash = $filename_data['bvam_hash'];
+
+                    // use the https version if we inferred a bvam link
+                    if ($uri_data['inferred']) {
+                        $uri = $uri_data['secure_uri'];
+                    }
                 } else if ($filename_data['type'] == 'enhanced') {
                     if (in_array($url_pieces['scheme'], ['http','https'])) {
                         // assume enhanced asset info
                         $type = 'enhanced';
-                        $uri = $description;
                     }
                 }
+            } else {
+                // not a valid enhanced or bvam filename
+                $uri = null;
+
             }
         }
 
@@ -306,6 +307,56 @@ class BvamUtil
     }
 
     // ------------------------------------------------------------------------
+
+    protected function resolveURLFromDescription($description) {
+        $scheme_was_inferred = false;
+        $uri                 = null;
+        $secure_uri          = null;
+
+        $trial_urls = [$description, 'http://'.$description];
+        foreach($trial_urls as $trial_offset => $trial_url) {
+            if ($trial_offset > 0) { $scheme_was_inferred = true; }
+
+            $url_pieces = parse_url($trial_url);
+            if (isset($url_pieces['scheme']) AND $url_pieces['scheme']) {
+                $host = isset($url_pieces['host']) ? $url_pieces['host'] : null;
+
+                $host_looks_valid = false;
+                if (strlen($host) > 2) {
+                    $dot_offset = strpos($host, '.');
+                    if ($dot_offset !== false) {
+                        $host_looks_valid = ($dot_offset > 0) AND ($dot_offset < strlen($host) - 1);
+                    }
+                }
+
+                if ($host_looks_valid AND isset($url_pieces['path'])) {
+                    $uri        = $this->assembleURL($url_pieces);
+                    $secure_uri = $this->assembleURL(array_merge($url_pieces, ['scheme' => 'https']));
+                }
+
+                // if there was a scheme provided, don't try any more versions
+                break;
+            }
+        }
+
+        return [
+            'uri'        => $uri,
+            'host'       => $host,
+            'url_pieces' => $url_pieces,
+            'inferred'   => $scheme_was_inferred,
+            'secure_uri' => $secure_uri,
+        ];
+    }
+
+    protected function assembleURL($url_pieces) {
+        return 
+            $url_pieces['scheme'].'://'
+            .$url_pieces['host']
+            .(isset($url_pieces['port']) ? ':'.$url_pieces['port'] : '')
+            .$url_pieces['path']
+            ;
+    }
+
     
     protected function decodeJSONString($json_string) {
         $json_object = @json_decode($json_string, false);
