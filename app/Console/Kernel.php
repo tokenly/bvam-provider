@@ -15,6 +15,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Monitor Health
         \Tokenly\ConsulHealthDaemon\Console\ConsulHealthMonitorCommand::class,
+
+        // RegisterWithXChainCommand
+        \App\Console\Commands\RegisterWithXChainCommand::class,
     ];
 
     /**
