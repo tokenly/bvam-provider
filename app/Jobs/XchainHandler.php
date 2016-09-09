@@ -52,6 +52,20 @@ class XchainHandler extends XchainReceiveJob
                 EventLog::debug('issuance.unenhanced', $issuance_log_info);
                 return;
         }
+
+        // refresh the local asset info cache
+        if ($confirmations > 0) {
+            $asset_info_cache = app('App\Handlers\AssetInfo\AssetInfoCache');
+
+            // clear the cache
+            $asset_info_cache->forget($asset);
+
+            // refresh the cached asset info
+            $asset_info_cache->getInfo($asset);
+        }
+
+
+
     }
 
 

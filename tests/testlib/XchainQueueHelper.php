@@ -125,6 +125,12 @@ class XchainQueueHelper
         if ($bvam_hash === null) { $bvam_hash = 'template'; }
         array_set($template, 'counterpartyTx.description', str_replace('{TEMPLATE}', $bvam_hash, array_get($template, 'counterpartyTx.description')));
 
+        // set asset
+        if (isset($notification_overrides['asset']) AND (!isset($notification_overrides['counterpartyTx']) OR !isset($notification_overrides['counterpartyTx']['asset']))) {
+            if (isset($notification_overrides['counterpartyTx'])) { $notification_overrides['counterpartyTx'] = []; }
+            $notification_overrides['counterpartyTx']['asset'] = $notification_overrides['asset'];
+        }
+
         $out = array_replace_recursive($template, $notification_overrides);
 
 
