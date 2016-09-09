@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "78cd8654e035507e191f4b4a42359e60",
-    "content-hash": "d865620650c17f3709eaea89669470e4",
+    "hash": "34d9c51e1694916e9cb4897227adc5cb",
+    "content-hash": "8d3cda34318f150f3c390e5e87687094",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2881,16 +2881,16 @@
         },
         {
             "name": "tokenly/xchain-client",
-            "version": "v0.3.3",
+            "version": "v0.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tokenly/xchain-client.git",
-                "reference": "d132b4f427a58d30d08accabe1855c57c9ec6db4"
+                "reference": "0dbcdf3cf65c6d21077919696b6f20a5917625e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tokenly/xchain-client/zipball/d132b4f427a58d30d08accabe1855c57c9ec6db4",
-                "reference": "d132b4f427a58d30d08accabe1855c57c9ec6db4",
+                "url": "https://api.github.com/repos/tokenly/xchain-client/zipball/0dbcdf3cf65c6d21077919696b6f20a5917625e0",
+                "reference": "0dbcdf3cf65c6d21077919696b6f20a5917625e0",
                 "shasum": ""
             },
             "require": {
@@ -2920,7 +2920,7 @@
                 }
             ],
             "description": "A library",
-            "time": "2016-09-07 17:45:27"
+            "time": "2016-09-09 18:39:20"
         },
         {
             "name": "vlucas/phpdotenv",

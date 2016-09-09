@@ -182,6 +182,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // custom app service providers
+        App\Handlers\AssetInfo\EnhancedAssetInfoProvider::class,
+
+
     ],
 
     /*

@@ -312,34 +312,40 @@ class BvamUtil
         throw new Exception("scrapeBvam is unimplemented", 1);
     }
 
+
     // ------------------------------------------------------------------------
 
-    protected function myBvamProviderDomainsMap() {
-        if (!isset($this->provider_domains_map)) {
-            $this->provider_domains_map = [];
-            foreach (explode(',', env('MY_BVAM_PROVIDER_DOMAINS', '')) as $value) {
-                $value = strtolower(trim($value));
-                if (strlen($value) > 0) {
-                    $this->provider_domains_map[$value] = true;
-                }
+
+    // converts token asset_info into a BVAM-like structure
+    public function makeBvamFromAssetInfo($asset_info, $enhanced_asset_info=[]) {
+        // plain version with no enhanced asset info
+        $token_data = [
+            'asset'       => $asset_info['asset'],
+            'name'        => $asset_info['asset'],
+            'description' => $asset_info['description'],
+            'meta' => [
+                'bvam_version' => '1.0.0',
+            ],
+        ];
+
+        // check for enhanced data
+        if ($enhanced_asset_info) {
+            if (isset($enhanced_asset_info['description'])) { $token_data['description'] = $enhanced_asset_info['description']; }
+            if (isset($enhanced_asset_info['website'])) { $token_data['website'] = $enhanced_asset_info['website']; }
+            if (isset($enhanced_asset_info['image_base64'])) {
+                $token_data['images'] = [
+                    [
+                        'data' => $enhanced_asset_info['image_base64'],
+                        'size' => '48x48',
+                    ]
+                ];
             }
         }
-        return $this->provider_domains_map;
+
+        return $token_data;
     }
 
-    protected function looksLikeBvamHash($string) {
-        $first_letter = substr($string, 0, 1);
-        if (
-            ($first_letter == 'S' OR $first_letter == 'T')
-            AND strlen($string) >= 28 AND strlen($string) <= 30
-            AND preg_match('!^[a-zA-Z0-9]+$!', $string)
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    protected function resolveURLFromDescription($description) {
+    public function resolveURLFromDescription($description) {
         $uri                 = null;
         $host                = null;
         $url_pieces          = [];
@@ -380,6 +386,34 @@ class BvamUtil
             'secure_uri' => $secure_uri,
         ];
     }
+
+    // ------------------------------------------------------------------------
+
+    protected function myBvamProviderDomainsMap() {
+        if (!isset($this->provider_domains_map)) {
+            $this->provider_domains_map = [];
+            foreach (explode(',', env('MY_BVAM_PROVIDER_DOMAINS', '')) as $value) {
+                $value = strtolower(trim($value));
+                if (strlen($value) > 0) {
+                    $this->provider_domains_map[$value] = true;
+                }
+            }
+        }
+        return $this->provider_domains_map;
+    }
+
+    protected function looksLikeBvamHash($string) {
+        $first_letter = substr($string, 0, 1);
+        if (
+            ($first_letter == 'S' OR $first_letter == 'T')
+            AND strlen($string) >= 28 AND strlen($string) <= 30
+            AND preg_match('!^[a-zA-Z0-9]+$!', $string)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
 
     protected function assembleURL($url_pieces) {
         return 
