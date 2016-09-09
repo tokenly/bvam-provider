@@ -340,8 +340,10 @@ class BvamUtil
     }
 
     protected function resolveURLFromDescription($description) {
-        $scheme_was_inferred = false;
         $uri                 = null;
+        $host                = null;
+        $url_pieces          = [];
+        $scheme_was_inferred = false;
         $secure_uri          = null;
 
         $trial_urls = [$description, 'http://'.$description];

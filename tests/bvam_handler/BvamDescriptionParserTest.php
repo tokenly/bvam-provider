@@ -114,6 +114,14 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
+        $info = BvamUtil::parseBvamIssuanceDescription('');
+        PHPUnit::assertEquals([
+            'type'      => null,
+            'bvam_hash' => null,
+            'host'      => null,
+            'uri'       => null,
+        ], $info);
+
 
     }
 
