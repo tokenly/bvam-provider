@@ -218,6 +218,15 @@ class BvamUtil
 
         $uri_data = $this->resolveURLFromDescription($description);
 
+        if (!$uri_data['uri']) {
+            // try parsing this description as just a bvam filename with no URL
+            $trial_filename_data = $this->parseBvamFilename($description);
+            if ($trial_filename_data AND $trial_filename_data['type'] == 'bvam') {
+                $domain = array_keys($this->myBvamProviderDomainsMap())[0];
+                $uri_data = $this->resolveURLFromDescription($domain.'/'.$trial_filename_data['bvam_hash'].'.json');
+            }
+        }
+
         if ($uri_data['uri']) {
             $uri        = $uri_data['uri'];
             $host       = $uri_data['host'];
@@ -259,9 +268,15 @@ class BvamUtil
     public function parseBvamFilename($filename) {
         if ($filename === null) { return null; }
 
+        $filename_stub = null;
         if (strtolower(substr($filename, -5)) == '.json') {
             $filename_stub = substr($filename, 0, -5);
-            if (strlen($filename_stub) >= 28 AND strlen($filename_stub) <= 30) {
+        } else if ($this->looksLikeBvamHash($filename)) {
+            $filename_stub = $filename;
+        }
+
+        if ($filename_stub) {
+            if ($this->looksLikeBvamHash($filename_stub)) {
                 $first_letter = substr($filename_stub, 0, 1);
                 if ($first_letter == 'T') {
                     return [
@@ -289,6 +304,17 @@ class BvamUtil
     // ------------------------------------------------------------------------
 
     public function isBvamProviderDomain($domain) {
+        $provider_domains_map = $this->myBvamProviderDomainsMap();
+        return isset($provider_domains_map[strtolower($domain)]);
+    }
+
+    public function scrapeBvam($external_uri) {
+        throw new Exception("scrapeBvam is unimplemented", 1);
+    }
+
+    // ------------------------------------------------------------------------
+
+    protected function myBvamProviderDomainsMap() {
         if (!isset($this->provider_domains_map)) {
             $this->provider_domains_map = [];
             foreach (explode(',', env('MY_BVAM_PROVIDER_DOMAINS', '')) as $value) {
@@ -298,15 +324,20 @@ class BvamUtil
                 }
             }
         }
-
-        return isset($this->provider_domains_map[strtolower($domain)]);
+        return $this->provider_domains_map;
     }
 
-    public function scrapeBvam($external_uri) {
-        throw new Exception("scrapeBvam is unimplemented", 1);
+    protected function looksLikeBvamHash($string) {
+        $first_letter = substr($string, 0, 1);
+        if (
+            ($first_letter == 'S' OR $first_letter == 'T')
+            AND strlen($string) >= 28 AND strlen($string) <= 30
+            AND preg_match('!^[a-zA-Z0-9]+$!', $string)
+        ) {
+            return true;
+        }
+        return false;
     }
-
-    // ------------------------------------------------------------------------
 
     protected function resolveURLFromDescription($description) {
         $scheme_was_inferred = false;
