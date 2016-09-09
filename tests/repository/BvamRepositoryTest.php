@@ -45,7 +45,7 @@ class BvamRepositoryTest extends TestCase {
         $bvam4 = app('BvamHelper')->newBvam(['asset' => 'MYTOKEN2'], ['status' => Bvam::STATUS_CONFIRMED]);
         $repository = app('App\Repositories\BvamRepository');
 
-        $repository->markActiveBvamsForAssetAsReplaced('MYTOKEN');
+        $repository->markOtherActiveBvamsForAssetAsReplaced('MYTOKEN', $bvam1);
 
         // reload
         $bvam1 = $repository->findById($bvam1['id']);
@@ -58,6 +58,26 @@ class BvamRepositoryTest extends TestCase {
         PHPUnit::assertEquals(Bvam::STATUS_REPLACED, $bvam2['status']);
         PHPUnit::assertEquals(Bvam::STATUS_REPLACED, $bvam3['status']);
         PHPUnit::assertEquals(Bvam::STATUS_CONFIRMED, $bvam4['status']);
+    }
+
+    public function testMarkingReplacedExcludesActiveBvam()
+    {
+        $bvam1 = app('BvamHelper')->newBvam(['asset' => 'MYTOKEN'], ['status' => Bvam::STATUS_CONFIRMED]);
+        $bvam2 = app('BvamHelper')->newBvam(['asset' => 'MYTOKEN', 'name' => 'expired one'], ['status' => Bvam::STATUS_CONFIRMED]);
+        $bvam3 = app('BvamHelper')->newBvam(['asset' => 'MYTOKEN2'], ['status' => Bvam::STATUS_CONFIRMED]);
+        $repository = app('App\Repositories\BvamRepository');
+
+        $repository->markOtherActiveBvamsForAssetAsReplaced('MYTOKEN', $bvam1);
+
+        // reload
+        $bvam1 = $repository->findById($bvam1['id']);
+        $bvam2 = $repository->findById($bvam2['id']);
+        $bvam3 = $repository->findById($bvam3['id']);
+
+        // check statuses
+        PHPUnit::assertEquals(Bvam::STATUS_CONFIRMED, $bvam1['status']);
+        PHPUnit::assertEquals(Bvam::STATUS_REPLACED,  $bvam2['status']);
+        PHPUnit::assertEquals(Bvam::STATUS_CONFIRMED, $bvam3['status']);
     }
 
     protected function createRepositoryTestHelper() {

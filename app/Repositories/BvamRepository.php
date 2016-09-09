@@ -43,9 +43,10 @@ class BvamRepository extends APIRepository
         }
     }
 
-    public function markActiveBvamsForAssetAsReplaced($asset) {
+    public function markOtherActiveBvamsForAssetAsReplaced($asset, Bvam $exclude_bvam) {
         return $this->prototype_model
-            ->where('asset', '=', $asset)
+            ->where('asset', '=',  $asset)
+            ->where('id',    '!=', $exclude_bvam['id'])
             ->whereIn('status', [Bvam::STATUS_UNCONFIRMED, Bvam::STATUS_CONFIRMED,])
             ->update([
                 'status'     => Bvam::STATUS_REPLACED,

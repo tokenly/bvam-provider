@@ -147,7 +147,7 @@ class BvamUtil
         DB::transaction(function() use ($repository, $bvam, $update_vars, $confirmations) {
             if ($confirmations > 0) {
                 // make all previous active bvams for this asset replaced
-                $repository->markActiveBvamsForAssetAsReplaced($bvam['asset']);
+                $repository->markOtherActiveBvamsForAssetAsReplaced($bvam['asset'], $bvam);
             }
 
             // apply the update
