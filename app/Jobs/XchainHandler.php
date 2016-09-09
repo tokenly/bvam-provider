@@ -46,6 +46,7 @@ class XchainHandler extends XchainReceiveJob
 
             case 'enhanced':
                 EventLog::debug('issuance.enhanced', $issuance_log_info);
+                break;
 
             default:
                 EventLog::debug('issuance.unenhanced', $issuance_log_info);
