@@ -87,9 +87,7 @@ class TokenResourceTest extends TestCase
             'issuer'      => '12717MBviQxttaBVhFGRP1LxD8X6CaW452',
             'supply'      => 10000000000000,
         ]);
-        app()->bind('Tokenly\XChainClient\Client', function() use ($mock_xchain_client) {
-            return $mock_xchain_client;
-        });
+        app()->instance('Tokenly\XChainClient\Client', $mock_xchain_client);
 
         $mock = new MockHandler([
             new Response(200, [], app('EnhancedAssetInfoHelper')->getEnhancedAssetInfoAsJson()),

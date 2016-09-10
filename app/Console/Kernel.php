@@ -18,6 +18,9 @@ class Kernel extends ConsoleKernel
 
         // RegisterWithXChainCommand
         \App\Console\Commands\RegisterWithXChainCommand::class,
+
+        // ReparseTokenDescriptionCommand
+        \App\Console\Commands\ReparseTokenDescriptionCommand::class,
     ];
 
     /**

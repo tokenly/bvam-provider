@@ -12,46 +12,11 @@ class XchainHandler extends XchainReceiveJob
     protected function handleEvent_issuance($payload) {
         $description   = $payload['counterpartyTx']['description'];
         $asset         = $payload['counterpartyTx']['asset'];
+        $txid          = $payload['txid'];
         $confirmations = $payload['confirmations'];
 
-        $description_info = BvamUtil::parseBvamIssuanceDescription($description);
-        $type = $description_info['type'];
-
-        $issuance_log_info = [
-            'asset'         => $asset,
-            'hash'          => $description_info['bvam_hash'],
-            'description'   => $description,
-            'confirmations' => $confirmations,
-            'confirmed'     => $payload['confirmed'],
-            'txid'          => $payload['txid'],
-            'type'          => $type,
-        ];
-
-
-        switch ($type) {
-            case 'bvam':
-                // if the bvam provider is external
-                //   attempt to scrape from another provider
-                if (!BvamUtil::isBvamProviderDomain($description_info['host'])) {
-                    BvamUtil::scrapeBvam($description_info['uri']);
-                }
-
-                $confirmed = BvamUtil::confirmBvam($description_info['bvam_hash'], $asset, $payload['txid'], $confirmations);
-                if ($confirmed) {
-                    EventLog::info('issuance.confirmedBvam', $issuance_log_info);
-                } else {
-                    EventLog::warning('issuance.confirmedBvamFailed', $issuance_log_info);
-                }
-                break;
-
-            case 'enhanced':
-                EventLog::debug('issuance.enhanced', $issuance_log_info);
-                break;
-
-            default:
-                EventLog::debug('issuance.unenhanced', $issuance_log_info);
-                return;
-        }
+        // parse the description and confirm the BVAM
+        BvamUtil::processIssuance($asset, $description, $txid, $confirmations);
 
         // refresh the local asset info cache
         if ($confirmations > 0) {
@@ -63,9 +28,6 @@ class XchainHandler extends XchainReceiveJob
             // refresh the cached asset info
             $asset_info_cache->getInfo($asset);
         }
-
-
-
     }
 
 

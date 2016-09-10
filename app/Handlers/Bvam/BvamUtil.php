@@ -7,6 +7,7 @@ use App\Models\BvamCategory;
 use App\Providers\DateProvider\Facade\DateProvider;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JsonSchema\Validator;
 use StephenHill\Base58;
 use Tokenly\LaravelEventLog\Facade\EventLog;
@@ -17,6 +18,52 @@ class BvamUtil
 
     const BVAM_SCHEMA          = 'BVAM-v1.0.0-draft-schema.json';
     const BVAM_CATEGORY_SCHEMA = 'BVAM-Category-v1.0.0-draft-schema.json';
+
+    public function processIssuance($asset, $description, $txid, $confirmations) {
+        // Log::debug("processIssuance called for $asset");
+        $description_info = $this->parseBvamIssuanceDescription($description);
+        $type = $description_info['type'];
+
+        $issuance_log_info = [
+            'asset'         => $asset,
+            'hash'          => $description_info['bvam_hash'],
+            'description'   => $description,
+            'confirmations' => $confirmations,
+            'txid'          => $txid,
+            'type'          => $type,
+        ];
+        // Log::debug("\$issuance_log_info=".json_encode($issuance_log_info, 192));
+
+
+        switch ($type) {
+            case 'bvam':
+                // if the bvam provider is external
+                //   attempt to scrape from another provider
+                if (!$this->isBvamProviderDomain($description_info['host'])) {
+                    $this->scrapeBvam($description_info['uri']);
+                }
+
+                $confirmed = $this->confirmBvam($description_info['bvam_hash'], $asset, $txid, $confirmations);
+                if ($confirmed) {
+                    EventLog::info('asset.confirmedBvam', $issuance_log_info);
+                } else {
+                    EventLog::warning('asset.confirmedBvamFailed', $issuance_log_info);
+                }
+                break;
+
+            case 'enhanced':
+                EventLog::debug('asset.enhanced', $issuance_log_info);
+                break;
+
+            default:
+                EventLog::debug('asset.unenhanced', $issuance_log_info);
+                return;
+        }
+
+        return $issuance_log_info;
+    }
+
+    // ------------------------------------------------------------------------
 
     public function createBvamFromString($bvam_string, $valid_bvam_object=null) {
         if (!is_string($bvam_string)) {
