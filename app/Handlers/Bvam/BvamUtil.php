@@ -282,7 +282,7 @@ class BvamUtil
         DB::transaction(function() use ($repository, $bvam_category, $update_vars, $confirmations) {
             if ($confirmations > 0) {
                 // make all previous active bvam categories for this category ID as replaced
-                $repository->markActiveForCategoryIdAsReplaced($bvam_category['category_id']);
+                $repository->markOtherActiveBvamCategoriesForCategoryIdAsReplaced($bvam_category['category_id'], $bvam_category);
             }
 
             // apply the update
