@@ -38,7 +38,7 @@ class BvamCategoryRepositoryTest extends TestCase {
         $bvam_category4 = app('BvamCategoryHelper')->newBvamCategory(['category_id' => 'cat002'], ['status' => BvamCategory::STATUS_CONFIRMED]);
 
         $repository = app('App\Repositories\BvamCategoryRepository');
-        $repository->markActiveForCategoryIdAsReplaced('BVAM Test Category One 201609a');
+        $repository->markOtherActiveBvamCategoriesForCategoryIdAsReplaced('BVAM Test Category One 201609a', $bvam_category1);
 
         // reload
         $bvam_category1 = $repository->findById($bvam_category1['id']);
@@ -49,6 +49,29 @@ class BvamCategoryRepositoryTest extends TestCase {
         // check statuses
         PHPUnit::assertEquals(BvamCategory::STATUS_DRAFT, $bvam_category1['status']);
         PHPUnit::assertEquals(BvamCategory::STATUS_REPLACED, $bvam_category2['status']);
+        PHPUnit::assertEquals(BvamCategory::STATUS_REPLACED, $bvam_category3['status']);
+        PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $bvam_category4['status']);
+    }
+
+    public function testMarkOtherActiveCategoriesForCategoryIdAsReplaced()
+    {
+        $bvam_category1 = app('BvamCategoryHelper')->newBvamCategory();
+        $bvam_category2 = app('BvamCategoryHelper')->newBvamCategory(['version' => '1.0.1'], ['status' => BvamCategory::STATUS_CONFIRMED]);
+        $bvam_category3 = app('BvamCategoryHelper')->newBvamCategory(['version' => '1.0.2'], ['status' => BvamCategory::STATUS_UNCONFIRMED]);
+        $bvam_category4 = app('BvamCategoryHelper')->newBvamCategory(['category_id' => 'cat002'], ['status' => BvamCategory::STATUS_CONFIRMED]);
+
+        $repository = app('App\Repositories\BvamCategoryRepository');
+        $repository->markOtherActiveBvamCategoriesForCategoryIdAsReplaced('BVAM Test Category One 201609a', $bvam_category2);
+
+        // reload
+        $bvam_category1 = $repository->findById($bvam_category1['id']);
+        $bvam_category2 = $repository->findById($bvam_category2['id']);
+        $bvam_category3 = $repository->findById($bvam_category3['id']);
+        $bvam_category4 = $repository->findById($bvam_category4['id']);
+
+        // check statuses
+        PHPUnit::assertEquals(BvamCategory::STATUS_DRAFT, $bvam_category1['status']);
+        PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $bvam_category2['status']);
         PHPUnit::assertEquals(BvamCategory::STATUS_REPLACED, $bvam_category3['status']);
         PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $bvam_category4['status']);
     }

@@ -59,9 +59,10 @@ class BvamCategoryRepository extends APIRepository
         return $query->first();
     }
 
-    public function markActiveForCategoryIdAsReplaced($category_id) {
+    public function markOtherActiveBvamCategoriesForCategoryIdAsReplaced($category_id, BvamCategory $exclude_bvam_cat) {
         return $this->prototype_model
             ->where('category_id', '=', $category_id)
+            ->where('id',    '!=', $exclude_bvam_cat['id'])
             ->whereIn('status', [BvamCategory::STATUS_UNCONFIRMED, BvamCategory::STATUS_CONFIRMED,])
             ->update([
                 'status'     => BvamCategory::STATUS_REPLACED,
