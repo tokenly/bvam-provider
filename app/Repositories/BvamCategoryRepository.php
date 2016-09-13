@@ -48,6 +48,17 @@ class BvamCategoryRepository extends APIRepository
         return $query->first();
     }
 
+    public function findConfirmedByCategoryId($category_id) {
+
+        $query = $this->prototype_model->newQuery();
+        $query->where([
+            'category_id' => $category_id,
+            'status'      => BvamCategory::STATUS_CONFIRMED,
+        ]);
+
+        return $query->first();
+    }
+
     public function markActiveForCategoryIdAsReplaced($category_id) {
         return $this->prototype_model
             ->where('category_id', '=', $category_id)

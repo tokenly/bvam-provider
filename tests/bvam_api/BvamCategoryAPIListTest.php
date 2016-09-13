@@ -30,8 +30,8 @@ class BvamCategoryAPIListTest extends TestCase
         // confirm 2 of the BVAM Categories
         $txid1 = '0000000000000000000000000000000000000000000000000000000000000111';
         $txid2 = '0000000000000000000000000000000000000000000000000000000000000111';
-        BvamUtil::confirmBvamCategory($bvam_cat1['hash'], 'BVAM Test Category One 201609a', $txid1, 1);
-        BvamUtil::confirmBvamCategory($bvam_cat2['hash'], 'cat0002', $txid2, 1);
+        BvamUtil::confirmBvamCategory($bvam_cat1['hash'], 'BVAM Test Category One 201609a', '0.0.1', $txid1, 1);
+        BvamUtil::confirmBvamCategory($bvam_cat2['hash'], 'cat0002', '0.0.2', $txid2, 1);
 
 
         // now get the list again with the 2 items
@@ -40,9 +40,11 @@ class BvamCategoryAPIListTest extends TestCase
         PHPUnit::assertCount(2, $response['items']);
         PHPUnit::assertEquals('BVAM Test Category One 201609a', $response['items'][0]['categoryId']);
         PHPUnit::assertEquals('Test Category One', $response['items'][0]['title']);
+        PHPUnit::assertEquals('0.0.1', $response['items'][0]['version']);
         PHPUnit::assertEquals($txid1, $response['items'][0]['txid']);
         PHPUnit::assertEquals('cat0002', $response['items'][1]['categoryId']);
         PHPUnit::assertEquals('Category 2', $response['items'][1]['title']);
+        PHPUnit::assertEquals('0.0.2', $response['items'][1]['version']);
         PHPUnit::assertEquals($txid2, $response['items'][1]['txid']);
     }
 

@@ -53,6 +53,19 @@ class BvamCategoryRepositoryTest extends TestCase {
         PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $bvam_category4['status']);
     }
 
+    public function testFindConfirmedByCategoryId()
+    {
+        $bvam_category1 = app('BvamCategoryHelper')->newBvamCategory();
+        $bvam_category2 = app('BvamCategoryHelper')->newBvamCategory(['version' => '1.0.1'], ['status' => BvamCategory::STATUS_CONFIRMED]);
+        $bvam_category3 = app('BvamCategoryHelper')->newBvamCategory(['version' => '1.0.2'], ['status' => BvamCategory::STATUS_UNCONFIRMED]);
+        $bvam_category4 = app('BvamCategoryHelper')->newBvamCategory(['category_id' => 'cat002'], ['status' => BvamCategory::STATUS_CONFIRMED]);
+
+        $repository = app('App\Repositories\BvamCategoryRepository');
+        $found_bvam_category = $repository->findConfirmedByCategoryId('BVAM Test Category One 201609a');
+        PHPUnit::assertEquals($bvam_category2['id'], $found_bvam_category['id']);
+    }
+
+
     protected function createRepositoryTestHelper() {
         $create_model_fn = function() {
             return app('BvamCategoryHelper')->newBvamCategory();

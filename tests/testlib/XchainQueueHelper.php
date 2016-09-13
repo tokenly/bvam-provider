@@ -133,6 +133,66 @@ class XchainQueueHelper
 
         $out = array_replace_recursive($template, $notification_overrides);
 
+        return $this->buildNotification($out);
+    }
+
+    // ------------------------------------------------------------------------
+    
+    public function buildConfirmedBroadcastNotification($notification_overrides=[], $broadcast_message=null) {
+        $notification_overrides['confirmed']     = true;
+        $notification_overrides['confirmations'] = 2;
+        return $this->buildBroadcastNotification($notification_overrides, $broadcast_message);
+    }
+
+    public function buildBroadcastNotification($notification_overrides=[], $broadcast_message=null) {
+        $template = [
+            'event' => 'broadcast',
+            'network' => 'counterparty',
+            'asset' => NULL,
+            'quantity' => 0,
+            'quantitySat' => 0,
+            'sources' => [
+                0 => '1AAAA1111xxxxxxxxxxxxxxxxxxy43CZ9j',
+            ],
+            'destinations' => [],
+            'notificationId' => 'd2dbb81c-a178-4b32-97f6-4def24dfdfd7',
+            'txid' => '0000000000000000000000000000000000000000000000000000000000003333',
+            'transactionTime' => '2016-09-07T15:55:05+0000',
+            'confirmed' => false,
+            'confirmations' => 0,
+            'confirmationTime' => '',
+            'notifiedMonitorId' => '8de89a79-bc2f-40e9-a991-b9a511e16485',
+            'bitcoinTx' => [
+                'hex' => '0100000001b78a8302b19b96946eadd07639eb7cba5912b0289e06651b43397eafaa5c2263000000006a47304402202bcb838d5cde360a441a3a2078c850da7d5beab07b59d0fe9c65a76cc2773ee90220243dd885f5da5d498e42f9ab9168f4ab4ee7059f2570ff98df116a13c55978fc012102bf6dd08324d2ba2dde233bd2e0679e2b9566569832a5df95e66067205cc37cfdffffffff020000000000000000476a453278869e7fd274e341da1146748d71feec55a24cac50559905938bd422261e6141e6511a4dfc44ed7def29b4ca07116be1a0bde2c0222ccb08e246ceba787d06d44f58d58d8d610100000000001976a914fa6bfacfa3fc9a6a1998ca6a88d26d168aff71f888ac00000000',
+                'txid' => '0000000000000000000000000000000000000000000000000000000000003333',
+                'confirmations' => 0,
+                'fees' => 0.00013490999999999999,
+                'feesSat' => 13491,
+            ],
+            'transactionFingerprint' => 'b30b789a222a809d8626157184557e9a72a84d175935983cd6bb9b28a0a657bd',
+            'counterpartyTx' => [
+                'type' => 'broadcast',
+                'sources' => [
+                    0 => '1AAAA1111xxxxxxxxxxxxxxxxxxy43CZ9j',
+                ],
+                'source' => '1AAAA1111xxxxxxxxxxxxxxxxxxy43CZ9j',
+                'timestamp' => 1473158100,
+                'value' => -1,
+                'fee_fraction' => 0,
+                'message' => 'Test Broadcast Message',
+                'destinations' => [],
+                'quantity' => 0,
+                'quantitySat' => 0,
+                'dustSize' => 0,
+                'dustSizeSat' => 0,
+            ],
+        ];
+
+
+        if ($broadcast_message === null) { $broadcast_message = 'template'; }
+        array_set($template, 'counterpartyTx.message', $broadcast_message);
+
+        $out = array_replace_recursive($template, $notification_overrides);
 
         return $this->buildNotification($out);
     }

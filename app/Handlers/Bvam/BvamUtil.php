@@ -21,7 +21,7 @@ class BvamUtil
 
     public function processIssuance($asset, $description, $txid, $confirmations) {
         // Log::debug("processIssuance called for $asset");
-        $description_info = $this->parseBvamIssuanceDescription($description);
+        $description_info = $this->parseBvamURLReference($description);
         $type = $description_info['type'];
 
         $issuance_log_info = [
@@ -61,6 +61,36 @@ class BvamUtil
         }
 
         return $issuance_log_info;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public function processBroadcast($message, $txid, $confirmations) {
+        $message_info = $this->parseBvamBroadcastMessage($message);
+        // echo "\$message_info: ".json_encode($message_info, 192)."\n";
+
+        $broadcast_log_info = [
+            'is_valid'      => $message_info['is_valid'],
+            'error'         => $message_info['error'],
+            'category_id'   => $message_info['category_id'],
+            'version'       => $message_info['version'],
+            'hash'          => ($message_info['bvam_info'] ? $message_info['bvam_info']['bvam_hash'] : null),
+            'message'       => $message,
+            'confirmations' => $confirmations,
+            'txid'          => $txid,
+        ];
+
+        if ($message_info['is_valid']) {
+            $confirmed = $this->confirmBvamCategory($message_info['bvam_info']['bvam_hash'], $message_info['category_id'], $message_info['version'], $txid, $confirmations);
+            if ($confirmed) {
+                EventLog::info('broadcast.confirmedBvamCategory', $broadcast_log_info);
+            } else {
+                EventLog::warning('broadcast.confirmedBvamCategoryFailed', $broadcast_log_info);
+            }
+        } else {
+            EventLog::info('broadcast.unparsed', $broadcast_log_info);
+        }
+
     }
 
     // ------------------------------------------------------------------------
@@ -208,11 +238,11 @@ class BvamUtil
     }
 
 
-    public function markBvamCategoryAsUnconfirmed($hash, $category_id_from_transaction, $txid) {
-        return $this->confirmBvamCategory($hash, $category_id_from_transaction, $txid, 0);
+    public function markBvamCategoryAsUnconfirmed($hash, $category_id_from_transaction, $version, $txid) {
+        return $this->confirmBvamCategory($hash, $category_id_from_transaction, $version, $txid, 0);
     }
 
-    public function confirmBvamCategory($hash, $category_id_from_transaction, $txid, $confirmations) {
+    public function confirmBvamCategory($hash, $category_id_from_transaction, $version, $txid, $confirmations) {
         $repository = app('App\Repositories\BvamCategoryRepository');
         
         $bvam_category = $repository->findByHash($hash);
@@ -227,9 +257,20 @@ class BvamUtil
             return false;
         }
 
+        // if a verified category already exists with a higher version
+        //   then don't update this one
+        $confirmed_bvam_category = $repository->findConfirmedByCategoryId($category_id_from_transaction);
+        if (version_compare($version, $confirmed_bvam_category['version'], '<')) {
+            EventLog::logError('bvamCategory.confirm.versionTooLow', "The version $version from the broadcast was less than the confirmed version {$confirmed_bvam_category['version']}");
+            return false;
+        }
+
+
+
 
         $update_vars = [
             'txid'              => $txid,
+            'version'           => $version,
             'status'            => ($confirmations > 0 ? BvamCategory::STATUS_CONFIRMED : BvamCategory::STATUS_UNCONFIRMED),
             'confirmations'     => $confirmations,
             'last_validated_at' => DateProvider::now(),
@@ -256,7 +297,7 @@ class BvamUtil
 
     // ------------------------------------------------------------------------
 
-    public function parseBvamIssuanceDescription($description) {
+    public function parseBvamURLReference($description) {
         $bvam_hash               = null;
         $enhanced_asset_info_url = null;
         $type                    = null;
@@ -268,7 +309,7 @@ class BvamUtil
         if (!$uri_data['uri']) {
             // try parsing this description as just a bvam filename with no URL
             $trial_filename_data = $this->parseBvamFilename($description);
-            if ($trial_filename_data AND $trial_filename_data['type'] == 'bvam') {
+            if ($trial_filename_data AND in_array($trial_filename_data['type'], ['bvam','category'])) {
                 $domain = array_keys($this->myBvamProviderDomainsMap())[0];
                 $uri_data = $this->resolveURLFromDescription($domain.'/'.$trial_filename_data['bvam_hash'].'.json');
             }
@@ -284,6 +325,14 @@ class BvamUtil
             if ($filename_data) {
                 if ($filename_data['type'] == 'bvam') {
                     $type = 'bvam';
+                    $bvam_hash = $filename_data['bvam_hash'];
+
+                    // use the https version if we inferred a bvam link
+                    if ($uri_data['inferred']) {
+                        $uri = $uri_data['secure_uri'];
+                    }
+                } else if ($filename_data['type'] == 'category') {
+                    $type = 'category';
                     $bvam_hash = $filename_data['bvam_hash'];
 
                     // use the https version if we inferred a bvam link
@@ -346,6 +395,74 @@ class BvamUtil
         }
 
         return null;
+    }
+
+    // ------------------------------------------------------------------------
+
+    public function parseBvamBroadcastMessage($message) {
+        $category_id = null;
+        $version     = null;
+        $bvam_info   = null;
+        $error       = null;
+        $is_valid    = false;
+
+        // BVAMCS;ACME Car Title;1.0.0;https://bvam-provider.com/bvamcs/S4RGTgM6BJtuu2EUsvsG3GkTpGr2T.json
+        $pieces = explode(';', $message, 4);
+        if (count($pieces) == 4) {
+            list($trial_marker, $trial_id, $trial_version, $trial_url) = $pieces;
+            $is_valid = true;
+            if ($is_valid AND $trial_marker !== 'BVAMCS') {
+                $error = 'Invalid marker';
+                $is_valid = false;
+            }
+            if ($is_valid AND !$this->isValidCategoryID($trial_id)) {
+                $error = 'Invalid category ID';
+                $is_valid = false;
+            }
+            if ($is_valid AND !$this->isValidVersion($trial_version)) {
+                $error = 'Invalid version';
+                $is_valid = false;
+            }
+            if ($is_valid) {
+                $trial_bvam_info = $this->parseBvamURLReference($trial_url);
+                if ($trial_bvam_info['type'] != 'category') {
+                    $error = 'Invalid BVAM url';
+                    $is_valid = false;
+                }
+            }
+
+            if ($is_valid) {
+                $category_id = $trial_id;
+                $version = $trial_version;
+                $bvam_info = $trial_bvam_info;
+            }
+        } else {
+            $error = 'Not a category schema broadcast message';
+        }
+
+        return [
+            'is_valid'    => $is_valid,
+            'category_id' => $category_id,
+            'version'     => $version,
+            'bvam_info'   => $bvam_info,
+            'error'       => $error,
+        ];
+    }
+
+    // This should be 128 characters or less in length. This can contain letters, numbers, spaces, dashes and underscores. 
+    public function isValidCategoryID($id) {
+        if (strlen($id) > 128) { return false; }
+        if (strlen($id) == 0) { return false; }
+        if (preg_match('!^[a-z0-9_ -]+$!i', $id) == 0) { return false; }
+
+        return true;
+    }
+    public function isValidVersion($version) {
+        if (preg_match('!^([0-9]+)\.([0-9]+)\.([0-9]+)$!', $version) == 0) {
+            return false;
+        }
+
+        return true;
     }
 
     // ------------------------------------------------------------------------

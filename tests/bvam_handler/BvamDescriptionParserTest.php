@@ -10,7 +10,7 @@ class BvamDescriptionParserTest extends TestCase
 
     public function testBvamDescriptionParser()
     {
-        $info = BvamUtil::parseBvamIssuanceDescription('Just a text description');
+        $info = BvamUtil::parseBvamURLReference('Just a text description');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,
@@ -18,7 +18,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('http://foo');
+        $info = BvamUtil::parseBvamURLReference('http://foo');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,
@@ -26,7 +26,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('http://foo.com/some/enhanced.json');
+        $info = BvamUtil::parseBvamURLReference('http://foo.com/some/enhanced.json');
         PHPUnit::assertEquals([
             'type'      => 'enhanced',
             'bvam_hash' => null,
@@ -34,7 +34,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'http://foo.com/some/enhanced.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('http://foo.com/S1234.json');
+        $info = BvamUtil::parseBvamURLReference('http://foo.com/S1234.json');
         PHPUnit::assertEquals([
             'type'      => 'enhanced',
             'bvam_hash' => null,
@@ -42,7 +42,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'http://foo.com/S1234.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('http://foo.com/T1111111111111111111111111111.json');
+        $info = BvamUtil::parseBvamURLReference('http://foo.com/T1111111111111111111111111111.json');
         PHPUnit::assertEquals([
             'type'      => 'bvam',
             'bvam_hash' => 'T1111111111111111111111111111',
@@ -50,7 +50,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'http://foo.com/T1111111111111111111111111111.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('foo.com/some/enhanced.json');
+        $info = BvamUtil::parseBvamURLReference('foo.com/some/enhanced.json');
         PHPUnit::assertEquals([
             'type'      => 'enhanced',
             'bvam_hash' => null,
@@ -58,7 +58,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'http://foo.com/some/enhanced.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('bad/data');
+        $info = BvamUtil::parseBvamURLReference('bad/data');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,
@@ -66,7 +66,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('bad/data.json');
+        $info = BvamUtil::parseBvamURLReference('bad/data.json');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,
@@ -74,7 +74,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('good.com/data.json');
+        $info = BvamUtil::parseBvamURLReference('good.com/data.json');
         PHPUnit::assertEquals([
             'type'      => 'enhanced',
             'bvam_hash' => null,
@@ -82,7 +82,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'http://good.com/data.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('secure.com/T1111111111111111111111111111.json');
+        $info = BvamUtil::parseBvamURLReference('secure.com/T1111111111111111111111111111.json');
         PHPUnit::assertEquals([
             'type'      => 'bvam',
             'bvam_hash' => 'T1111111111111111111111111111',
@@ -90,7 +90,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'https://secure.com/T1111111111111111111111111111.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('T1111111111111111111111111111.json');
+        $info = BvamUtil::parseBvamURLReference('T1111111111111111111111111111.json');
         PHPUnit::assertEquals([
             'type'      => 'bvam',
             'bvam_hash' => 'T1111111111111111111111111111',
@@ -98,7 +98,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'https://bvam-provider.dev/T1111111111111111111111111111.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('T1111111111111111111111111111');
+        $info = BvamUtil::parseBvamURLReference('T1111111111111111111111111111');
         PHPUnit::assertEquals([
             'type'      => 'bvam',
             'bvam_hash' => 'T1111111111111111111111111111',
@@ -106,7 +106,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => 'https://bvam-provider.dev/T1111111111111111111111111111.json',
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('foo.json');
+        $info = BvamUtil::parseBvamURLReference('foo.json');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,
@@ -114,7 +114,7 @@ class BvamDescriptionParserTest extends TestCase
             'uri'       => null,
         ], $info);
 
-        $info = BvamUtil::parseBvamIssuanceDescription('');
+        $info = BvamUtil::parseBvamURLReference('');
         PHPUnit::assertEquals([
             'type'      => null,
             'bvam_hash' => null,

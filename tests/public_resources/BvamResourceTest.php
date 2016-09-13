@@ -52,8 +52,8 @@ class BvamResourceTest extends TestCase
 
 
         // confirm BVAM for 2 of the categories
-        PHPUnit::assertNotEmpty(BvamUtil::confirmBvamCategory($bvam_cat1['hash'], 'BVAM Test Category One 201609a', '0000000000000000000000000000000000000000000000000000000000000111', 1));
-        PHPUnit::assertNotEmpty(BvamUtil::confirmBvamCategory($bvam_cat2['hash'], 'cat0002', '0000000000000000000000000000000000000000000000000000000000000222', 1));
+        PHPUnit::assertNotEmpty(BvamUtil::confirmBvamCategory($bvam_cat1['hash'], 'BVAM Test Category One 201609a', '0.0.1', '0000000000000000000000000000000000000000000000000000000000000111', 1));
+        PHPUnit::assertNotEmpty(BvamUtil::confirmBvamCategory($bvam_cat2['hash'], 'cat0002', '0.0.1', '0000000000000000000000000000000000000000000000000000000000000222', 1));
 
         // now get the resources again
         $response = $api->callAPIAndReturnJSONContent('GET', $bvam_cat1['hash'].'.json', [], 200);

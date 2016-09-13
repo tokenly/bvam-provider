@@ -86,20 +86,21 @@ class BvamHandlerTest extends TestCase
         // confirm BVAM for 2 of the tokens
         $txid1 = '0000000000000000000000000000000000000000000000000000000000000111';
         $txid2 = '0000000000000000000000000000000000000000000000000000000000000222';
-        $unconfirmed_bvam = BvamUtil::markBvamCategoryAsUnconfirmed($bvam_category1['hash'], 'BVAM Test Category One 201609a', $txid1);
+        $unconfirmed_bvam = BvamUtil::markBvamCategoryAsUnconfirmed($bvam_category1['hash'], 'BVAM Test Category One 201609a', '0.0.1', $txid1);
 
         // now get the list again with the 2 items
         PHPUnit::assertEquals('BVAM Test Category One 201609a', $unconfirmed_bvam['category_id']);
+        PHPUnit::assertEquals('0.0.1', $unconfirmed_bvam['version']);
         PHPUnit::assertEquals(BvamCategory::STATUS_UNCONFIRMED, $unconfirmed_bvam['status']);
         PHPUnit::assertEquals($txid1, $unconfirmed_bvam['txid']);
 
         // try a mismatched category
-        $confirmed_bvam = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'BADCATEGORYID', $txid1, 1);
+        $confirmed_bvam = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'BADCATEGORYID', '0.0.1', $txid1, 1);
         PHPUnit::assertEquals(false, $confirmed_bvam);
 
         // confirm both fully
-        $confirmed_bvam1 = BvamUtil::confirmBvamCategory($bvam_category1['hash'], 'BVAM Test Category One 201609a', $txid1, 1);
-        $confirmed_bvam2 = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'cat0002', $txid2, 1);
+        $confirmed_bvam1 = BvamUtil::confirmBvamCategory($bvam_category1['hash'], 'BVAM Test Category One 201609a', '0.0.1', $txid1, 1);
+        $confirmed_bvam2 = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'cat0002', '0.0.1', $txid2, 1);
 
         // now get the list again with the 2 items
         PHPUnit::assertEquals('BVAM Test Category One 201609a', $confirmed_bvam1['category_id']);
@@ -119,11 +120,11 @@ class BvamHandlerTest extends TestCase
         $bvam_category1 = $bvam_category_helper->newBvamCategory();
 
         // confirm the bvam
-        $bvam_category1 = BvamUtil::confirmBvamCategory($bvam_category1['hash'], 'BVAM Test Category One 201609a', $txid1, 1);
+        $bvam_category1 = BvamUtil::confirmBvamCategory($bvam_category1['hash'], 'BVAM Test Category One 201609a', '0.0.1', $txid1, 1);
 
         // now confirm a new version and hash for the same category ID
         $bvam_category2 = $bvam_category_helper->newBvamCategory(['title' => 'Updated Category Name', 'version' => '1.0.1']);
-        $bvam_category2 = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'BVAM Test Category One 201609a', $txid2, 1);
+        $bvam_category2 = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'BVAM Test Category One 201609a', '0.0.1', $txid2, 1);
 
         // get the list of active bvams - only bvam2 should be active
         $repository = app('App\Repositories\BvamCategoryRepository');
@@ -133,8 +134,32 @@ class BvamHandlerTest extends TestCase
         PHPUnit::assertEquals(BvamCategory::STATUS_REPLACED, $all_bvams[0]['status']);
         PHPUnit::assertEquals($bvam_category2['uuid'], $all_bvams[1]['uuid']);
         PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $all_bvams[1]['status']);
+    }
 
 
+    public function testConfirmBvamCategoryWithOlderVersionDoesNotInvalidateOtherBvamCategories() {
+        $bvam_category_helper = app('BvamCategoryHelper');
+        $api = app('APITestHelper');
+        $txid1 = '0000000000000000000000000000000000000000000000000000000000000111';
+        $txid2 = '0000000000000000000000000000000000000000000000000000000000000222';
+
+        // confirm the bvam
+        $bvam_category1 = $bvam_category_helper->newBvamCategory();
+        $bvam_category1 = BvamUtil::confirmBvamCategory($bvam_category1['hash'], 'BVAM Test Category One 201609a', '1.0.0', $txid1, 1);
+
+        // now confirm a new version and hash for the same category ID
+        $bvam_category2 = $bvam_category_helper->newBvamCategory(['title' => 'Updated Category Name',]);
+        $was_confirmed = BvamUtil::confirmBvamCategory($bvam_category2['hash'], 'BVAM Test Category One 201609a', '0.9.0', $txid2, 1);
+        PHPUnit::assertFalse($was_confirmed);
+
+        // get the list of active bvams - only bvam1 should be active
+        $repository = app('App\Repositories\BvamCategoryRepository');
+        $all_bvams = $repository->findAll();
+        PHPUnit::assertCount(2, $all_bvams);
+        PHPUnit::assertEquals($bvam_category1['uuid'], $all_bvams[0]['uuid']);
+        PHPUnit::assertEquals(BvamCategory::STATUS_CONFIRMED, $all_bvams[0]['status']);
+        PHPUnit::assertEquals($bvam_category2['uuid'], $all_bvams[1]['uuid']);
+        PHPUnit::assertEquals(BvamCategory::STATUS_DRAFT, $all_bvams[1]['status']);
     }
 
     public function testCategoryUpdateWithDifferentIssuerIsInvalid() {
