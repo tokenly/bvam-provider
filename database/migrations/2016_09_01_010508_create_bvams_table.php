@@ -27,7 +27,7 @@ class CreateBvamsTable extends Migration
 
             $table->timestamp('first_validated_at')->nullable()->index();
             $table->timestamp('last_validated_at')->nullable();
-            $table->tinyInteger('confirmations')->nullable()->unsigned();
+            $table->integer('confirmations')->nullable()->unsigned();
 
             $table->index('asset');
         });
