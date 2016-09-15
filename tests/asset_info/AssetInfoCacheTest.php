@@ -28,7 +28,6 @@ class AssetInfoCacheTest extends TestCase
         (new XchainHandler($payload))->handle();
 
 
-        // verifies that forget was called once
         Mockery::close();
     }
 
@@ -49,7 +48,6 @@ class AssetInfoCacheTest extends TestCase
             'description' => 'My newcoin',
         ], $response);
 
-        // verifies that forget was called once
         Mockery::close();
     }
 
@@ -99,7 +97,6 @@ class AssetInfoCacheTest extends TestCase
             ], 
         ], $response);
 
-        // verifies that forget was called once
         Mockery::close();
     }
 

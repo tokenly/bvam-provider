@@ -22,8 +22,7 @@ class TokenResourceTest extends TestCase
 
     public function testGetValidatedTokenInfoByAssetName()
     {
-        // mock xchain
-        app('Tokenly\XChainClient\Mock\MockBuilder')->installXChainMockClient();
+        $mock_cache = app('AssetInfoCacheHelper')->mockAssetInfoCacheGetMultiple(['TOKENLY']);
 
         $bvam_helper = app('BvamHelper');
         $api = app('APITestHelper');
@@ -48,12 +47,12 @@ class TokenResourceTest extends TestCase
         PHPUnit::assertNotEmpty($response['bvamString']);
         // echo "\$response: ".json_encode($response, 192)."\n";
 
+        Mockery::close();
     }
 
     public function testGetUnvalidatedTokenInfoByAssetName()
     {
-        // mock xchain
-        app('Tokenly\XChainClient\Mock\MockBuilder')->installXChainMockClient();
+        $mock_cache = app('AssetInfoCacheHelper')->mockAssetInfoCacheGetMultiple(['TOKENLY']);
 
         $bvam_helper = app('BvamHelper');
         $api = app('APITestHelper');
@@ -78,7 +77,7 @@ class TokenResourceTest extends TestCase
     public function testGetEnhancedTokenInfoByAssetName()
     {
         $mock_xchain_client = Mockery::mock('Tokenly\XChainClient\Client');
-        $mock_xchain_client->shouldReceive('getAsset')->with('NEWCOIN')->once()->andReturn([
+        $mock_xchain_client->shouldReceive('getAssets')->with(['NEWCOIN'])->once()->andReturn([[
             'asset'       => 'NEWCOIN',
             'divisible'   => true,
             'description' => 'tokenplace.foo/tokendata.json',
@@ -86,7 +85,7 @@ class TokenResourceTest extends TestCase
             'owner'       => '12717MBviQxttaBVhFGRP1LxD8X6CaW452',
             'issuer'      => '12717MBviQxttaBVhFGRP1LxD8X6CaW452',
             'supply'      => 10000000000000,
-        ]);
+        ]]);
         app()->instance('Tokenly\XChainClient\Client', $mock_xchain_client);
 
         $mock = new MockHandler([
@@ -119,6 +118,7 @@ class TokenResourceTest extends TestCase
 
         // echo "\$response: ".json_encode($response, 192)."\n";
 
+        Mockery::close();
     }
 
 

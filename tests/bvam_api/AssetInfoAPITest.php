@@ -22,17 +22,7 @@ class AssetInfoAPITest extends TestCase
 
     public function testGetAssetInfo()
     {
-        $mock_cache = Mockery::mock('App\Handlers\AssetInfo\AssetInfoCache');
-        $mock_cache->shouldReceive('getMultiple')->with(['FOOCOIN'])->once()->andReturn([
-            [
-                'asset'       => 'FOOCOIN',
-                'status'      => 'valid',
-                'description' => 'My foocoin',
-            ]
-        ]);
-        app()->bind('App\Handlers\AssetInfo\AssetInfoCache', function() use ($mock_cache) {
-            return $mock_cache;
-        });
+        $mock_cache = app('AssetInfoCacheHelper')->mockAssetInfoCacheGetMultiple(['FOOCOIN']);
 
         $api = app('APITestHelper');
         $response = $api->callAPIAndReturnJSONContent('GET', 'asset/FOOCOIN', [], 200);
@@ -40,26 +30,12 @@ class AssetInfoAPITest extends TestCase
         PHPUnit::assertEquals('My foocoin', $response['assetInfo']['description']);
         PHPUnit::assertEquals('My foocoin', $response['metadata']['description']);
 
+        Mockery::close();
     }
 
     public function testGetMultipleAssetInfo()
     {
-        $mock_cache = Mockery::mock('App\Handlers\AssetInfo\AssetInfoCache');
-        $mock_cache->shouldReceive('getMultiple')->with(['FOOCOIN','BARCOIN'])->once()->andReturn([
-            [
-                'asset'       => 'FOOCOIN',
-                'status'      => 'valid',
-                'description' => 'My foocoin',
-            ],
-            [
-                'asset'       => 'BARCOIN',
-                'status'      => 'valid',
-                'description' => 'My barcoin',
-            ],
-        ]);
-        app()->bind('App\Handlers\AssetInfo\AssetInfoCache', function() use ($mock_cache) {
-            return $mock_cache;
-        });
+        $mock_cache = app('AssetInfoCacheHelper')->mockAssetInfoCacheGetMultiple(['FOOCOIN','BARCOIN']);
 
         $api = app('APITestHelper');
         $response = $api->callAPIAndReturnJSONContent('GET', 'assets', ['assets' => 'FOOCOIN,BARCOIN'], 200);
@@ -71,6 +47,7 @@ class AssetInfoAPITest extends TestCase
         PHPUnit::assertEquals('My barcoin', $response[1]['assetInfo']['description']);
         PHPUnit::assertEquals('My barcoin', $response[1]['metadata']['description']);
 
+        Mockery::close();
     }
 
 
