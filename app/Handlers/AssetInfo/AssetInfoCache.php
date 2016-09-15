@@ -27,49 +27,12 @@ class AssetInfoCache
     }
 
     public function getInfo($asset_name) {
-        $cached_info = $this->getFromCache($asset_name);
-        if ($cached_info === null) {
-            $cache_length = self::FOREVER_CACHE_LENGTH_MINUTES;
+        $results = $this->fetchMultipleAssetInformation([$asset_name]);
+        return $results ? $results[0] : $results;
+    }
 
-            try {
-                $info = $this->loadFromXChain($asset_name);
-
-                // resolve the description
-                $enhanced_info = $this->enhanced_asset_info_resolver->resolveExtendedAssetInfoFromDescription($info['description']);
-                if ($enhanced_info['is_enhanced'] AND $enhanced_info['enhanced_data']) {
-                    $info['enhanced_data'] = $enhanced_info['enhanced_data'];
-                    $was_enhanced = true;
-                    $cache_length = self::ENHANCED_CACHE_LENGTH_MINUTES;
-                }
-
-                if ($enhanced_info['had_error']) {
-                    $cache_length = self::ERROR_CACHE_LENGTH_MINUTES;
-                }
-
-            } catch (Exception $e) {
-                if ($e->getCode() == 404) {
-                    // the asset was not found by xchain
-                    //   cache that it does not exist
-                    $info = [];
-                } else {
-                    EventLog::logError('assetInfo.error', $e);
-                    $info = null;
-                }
-            }
-
-            if ($info !== null) {
-                if ($cache_length == self::FOREVER_CACHE_LENGTH_MINUTES) {
-                    $this->laravel_cache->forever($asset_name, $info);
-                } else {
-                    $this->laravel_cache->put($asset_name, $info, $cache_length);
-                }
-            }
-
-        } else {
-            $info = $cached_info;
-        }
-
-        return $info;
+    public function getMultiple($asset_names) {
+        return $this->fetchMultipleAssetInformation($asset_names);
     }
 
     public function isDivisible($asset_name) {
@@ -90,8 +53,72 @@ class AssetInfoCache
         $this->laravel_cache->forget($asset_name);
     }
 
-    protected function loadFromXChain($asset_name) {
-        return $this->xchain_client->getAsset($asset_name);
+    // ------------------------------------------------------------------------
+    
+    protected function fetchMultipleAssetInformation($asset_names) {
+        $asset_names_to_load = [];
+        $responses_by_asset_name = [];
+        foreach($asset_names as $asset_name) {
+            $cached_info = $this->getFromCache($asset_name);
+            if ($cached_info) {
+                $responses_by_asset_name[$asset_name] = $cached_info;
+            } else {
+                $responses_by_asset_name[$asset_name] = null;
+                $asset_names_to_load[] = $asset_name;
+            }
+        }
+
+
+        if ($asset_names_to_load) {
+            $cache_length = self::FOREVER_CACHE_LENGTH_MINUTES;
+
+            try {
+                $infos = $this->_loadFromXChain($asset_names_to_load);
+
+                // resolve each description
+                foreach($infos as $info) {
+                    $enhanced_info = $this->enhanced_asset_info_resolver->resolveExtendedAssetInfoFromDescription($info['description']);
+                    if ($enhanced_info['is_enhanced'] AND $enhanced_info['enhanced_data']) {
+                        $info['enhanced_data'] = $enhanced_info['enhanced_data'];
+                        $was_enhanced = true;
+                        $cache_length = self::ENHANCED_CACHE_LENGTH_MINUTES;
+                    }
+
+                    if ($enhanced_info['had_error']) {
+                        $cache_length = self::ERROR_CACHE_LENGTH_MINUTES;
+                    }
+
+                    $responses_by_asset_name[$info['asset']] = $info;
+                }
+
+            } catch (Exception $e) {
+                if ($e->getCode() == 404) {
+                    // at least one asset was not found by xchain
+                    $responses_by_asset_name = [];
+                } else {
+                    EventLog::logError('assetInfo.error', $e);
+                    $responses_by_asset_name = [];
+                }
+            }
+
+            foreach($responses_by_asset_name as $asset_name => $info) {
+                if ($info !== null) {
+                    if ($cache_length == self::FOREVER_CACHE_LENGTH_MINUTES) {
+                        $this->laravel_cache->forever($asset_name, $info);
+                    } else {
+                        $this->laravel_cache->put($asset_name, $info, $cache_length);
+                    }
+                }
+            }
+
+        }
+
+        return array_values($responses_by_asset_name);
+    }
+
+    // public for mocking
+    public function _loadFromXChain($asset_names) {
+        return $this->xchain_client->getAssets($asset_names);
     }
 
 

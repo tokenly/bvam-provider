@@ -24,6 +24,10 @@ Route::group(['prefix' => 'api/v1'], function() {
     Route::get('/asset/{asset_name}', 'TokenResourceController@getTokenInfo')
         ->name('tokenresource.get');
 
+    // Lookup multiple assets by name
+    Route::get('/assets', 'TokenResourceController@getMultipleTokenInfo')
+        ->name('tokenresource.getMultiple');
+
 
     // create a new bvam
     Route::post('/bvam', 'BvamController@create')

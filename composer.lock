@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "34d9c51e1694916e9cb4897227adc5cb",
-    "content-hash": "8d3cda34318f150f3c390e5e87687094",
+    "hash": "9c183a39cbcd23da0dffceade197b33c",
+    "content-hash": "7ba47a56838d04e37df5d248b0570da5",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2799,22 +2799,22 @@
         },
         {
             "name": "tokenly/laravel-xchain-receive-queue",
-            "version": "v0.1.0",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tokenly/laravel-xchain-receive-queue.git",
-                "reference": "c71015ad32630608e3edb5867aa014f8219b43bd"
+                "reference": "b1a388afb0c8d0018f55c1d389c6fdb01b6deeed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tokenly/laravel-xchain-receive-queue/zipball/c71015ad32630608e3edb5867aa014f8219b43bd",
-                "reference": "c71015ad32630608e3edb5867aa014f8219b43bd",
+                "url": "https://api.github.com/repos/tokenly/laravel-xchain-receive-queue/zipball/b1a388afb0c8d0018f55c1d389c6fdb01b6deeed",
+                "reference": "b1a388afb0c8d0018f55c1d389c6fdb01b6deeed",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.5.0",
                 "tokenly/laravel-event-log": ">=1",
-                "tokenly/xchain-client": "^0.3"
+                "tokenly/xchain-client": "^0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4"
@@ -2837,7 +2837,7 @@
                 }
             ],
             "description": "A library to queue received XChain notifications",
-            "time": "2016-09-06 19:02:28"
+            "time": "2016-09-14 22:32:05"
         },
         {
             "name": "tokenly/token-generator",
@@ -2881,16 +2881,16 @@
         },
         {
             "name": "tokenly/xchain-client",
-            "version": "v0.3.4",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tokenly/xchain-client.git",
-                "reference": "0dbcdf3cf65c6d21077919696b6f20a5917625e0"
+                "reference": "635481a91fc3edd6bd85d9ca1d08ebcf38537c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tokenly/xchain-client/zipball/0dbcdf3cf65c6d21077919696b6f20a5917625e0",
-                "reference": "0dbcdf3cf65c6d21077919696b6f20a5917625e0",
+                "url": "https://api.github.com/repos/tokenly/xchain-client/zipball/635481a91fc3edd6bd85d9ca1d08ebcf38537c40",
+                "reference": "635481a91fc3edd6bd85d9ca1d08ebcf38537c40",
                 "shasum": ""
             },
             "require": {
@@ -2920,7 +2920,7 @@
                 }
             ],
             "description": "A library",
-            "time": "2016-09-09 18:39:20"
+            "time": "2016-09-14 22:18:04"
         },
         {
             "name": "vlucas/phpdotenv",
