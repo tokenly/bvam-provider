@@ -494,6 +494,7 @@ class BvamUtil
 
         // check for enhanced data
         if ($enhanced_asset_info) {
+            if (isset($enhanced_asset_info['name'])) { $token_data['name'] = $enhanced_asset_info['name']; }
             if (isset($enhanced_asset_info['description'])) { $token_data['description'] = $enhanced_asset_info['description']; }
             if (isset($enhanced_asset_info['website'])) { $token_data['website'] = $enhanced_asset_info['website']; }
             if (isset($enhanced_asset_info['image_base64'])) {
