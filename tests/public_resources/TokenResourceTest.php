@@ -121,5 +121,27 @@ class TokenResourceTest extends TestCase
         Mockery::close();
     }
 
+    public function testGetNumericAsset() {
+        $mock_cache = app('AssetInfoCacheHelper')->mockAssetInfoCacheGetMultiple(['A8222555550000000000']);
+
+        $api = app('APITestHelper');
+
+        // get the public token data by name (unvalidated token)
+        $response = $api->callAPIAndReturnJSONContent('GET', 'asset/A8222555550000000000', [], 200);
+        PHPUnit::assertEquals('A8222555550000000000', $response['asset']);
+        PHPUnit::assertEquals('A8222555550000000000', $response['metadata']['asset']);
+        PHPUnit::assertEquals('My a8222555550000000000', $response['metadata']['description']);
+
+        Mockery::close();
+    }
+
+    public function testBadNumericAsset() {
+        // get the public token data by name (invalid asset)
+        $api = app('APITestHelper');
+        $response = $api->callAPIAndReturnJSONContent('GET', 'asset/A100', [], 422);
+
+    }
+
+
 
 }
