@@ -23,7 +23,7 @@ class TokenResourceController extends ApiController
 
     public function getMultipleTokenInfo(Request $request, AssetInfoCache $asset_info_cache, BvamRepository $bvam_repository, APIControllerHelper $helper) {
         $asset_names = collect(explode(',', $request->input('assets')))
-            ->map('trim')
+            ->map(function($asset) { return trim($asset); })
             ->reject(function($asset) { return empty($asset); })
             ->toArray();
 
