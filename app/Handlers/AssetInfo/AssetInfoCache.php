@@ -56,10 +56,12 @@ class AssetInfoCache
     // ------------------------------------------------------------------------
     
     protected function fetchMultipleAssetInformation($asset_names) {
+        // Log::debug("\$asset_names=".json_encode($asset_names, 192));
         $asset_names_to_load = [];
         $responses_by_asset_name = [];
         foreach($asset_names as $asset_name) {
             $cached_info = $this->getFromCache($asset_name);
+            // Log::debug("\$asset_name=".json_encode($asset_name)." \$cached_info=".json_encode($cached_info, 192));
             if ($cached_info) {
                 $responses_by_asset_name[$asset_name] = $cached_info;
             } else {
@@ -69,6 +71,7 @@ class AssetInfoCache
         }
 
 
+        // Log::debug("\$asset_names_to_load=".json_encode($asset_names_to_load, 192));
         if ($asset_names_to_load) {
             $cache_length = self::FOREVER_CACHE_LENGTH_MINUTES;
 
@@ -93,6 +96,8 @@ class AssetInfoCache
 
             } catch (Exception $e) {
                 if ($e->getCode() == 404) {
+                    EventLog::logError('assetInfo.error', $e);
+
                     // at least one asset was not found by xchain
                     $responses_by_asset_name = [];
                 } else {
@@ -101,6 +106,7 @@ class AssetInfoCache
                 }
             }
 
+            // Log::debug("\$responses_by_asset_name=".json_encode($responses_by_asset_name, 192));
             foreach($responses_by_asset_name as $asset_name => $info) {
                 if ($info !== null) {
                     if ($cache_length == self::FOREVER_CACHE_LENGTH_MINUTES) {
