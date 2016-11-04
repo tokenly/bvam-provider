@@ -15,9 +15,10 @@ use \Exception;
 class AssetInfoCache
 {
 
-    const FOREVER_CACHE_LENGTH_MINUTES  = -1;
-    const ENHANCED_CACHE_LENGTH_MINUTES = 1440; // 24 hours
-    const ERROR_CACHE_LENGTH_MINUTES    = 60;   //  1 hour
+    const FOREVER_CACHE_LENGTH_MINUTES   = 31536000; // one year
+    const ENHANCED_CACHE_LENGTH_MINUTES  = 1440;     // 24 hours
+    const ERROR_CACHE_LENGTH_MINUTES     = 60;       //  1 hour
+    const NOT_FOUND_CACHE_LENGTH_MINUTES = 1;        //  1 minute
 
     public function __construct(Repository $laravel_cache, Client $xchain_client, EnhancedAssetInfoResolver $enhanced_asset_info_resolver)
     {
@@ -80,15 +81,21 @@ class AssetInfoCache
 
                 // resolve each description
                 foreach($infos as $info) {
-                    $enhanced_info = $this->enhanced_asset_info_resolver->resolveExtendedAssetInfoFromDescription($info['description']);
-                    if ($enhanced_info['is_enhanced'] AND $enhanced_info['enhanced_data']) {
-                        $info['enhanced_data'] = $enhanced_info['enhanced_data'];
-                        $was_enhanced = true;
-                        $cache_length = self::ENHANCED_CACHE_LENGTH_MINUTES;
-                    }
+                    if ($info) {
+                        $enhanced_info = $this->enhanced_asset_info_resolver->resolveExtendedAssetInfoFromDescription($info['description']);
+                        if ($enhanced_info['is_enhanced'] AND $enhanced_info['enhanced_data']) {
+                            $info['enhanced_data'] = $enhanced_info['enhanced_data'];
+                            $was_enhanced = true;
+                            $cache_length = min($cache_length, self::ENHANCED_CACHE_LENGTH_MINUTES);
+                        }
 
-                    if ($enhanced_info['had_error']) {
-                        $cache_length = self::ERROR_CACHE_LENGTH_MINUTES;
+                        if ($enhanced_info['had_error']) {
+                            $cache_length = min($cache_length, self::ERROR_CACHE_LENGTH_MINUTES);
+                        }
+                    } else {
+                        // asset didn't exist in counterparty yet
+                        $info = [];
+                        $cache_length = min($cache_length, self::NOT_FOUND_CACHE_LENGTH_MINUTES);
                     }
 
                     $responses_by_asset_name[$info['asset']] = $info;
