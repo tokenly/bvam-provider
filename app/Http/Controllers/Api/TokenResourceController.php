@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Tokenly\AssetNameUtils\Validator as AssetValidator;
 use Tokenly\LaravelApiProvider\Helpers\APIControllerHelper;
 
 class TokenResourceController extends ApiController
@@ -39,7 +40,7 @@ class TokenResourceController extends ApiController
         $errors = [];
         foreach($asset_names as $asset_name) {
             // check the asset name
-            if (!$this->isValidAssetName($asset_name)) {
+            if (!AssetValidator::isValidAssetName($asset_name)) {
                 $errors[] = 'The asset '.$asset_name.' was invalid';
             }
         }
@@ -82,34 +83,6 @@ class TokenResourceController extends ApiController
         }
 
         return $enhanced_asset_infos;
-    }
-
-    // ------------------------------------------------------------------------
-    
-    
-    protected function isValidAssetName($name) {
-        if ($name === 'BTC') { return true; }
-        if ($name === 'XCP') { return true; }
-
-        // check free asset names
-        if (substr($name, 0, 1) == 'A') { return $this->isValidFreeAssetName($name); }
-
-        if (!preg_match('!^[A-Z]+$!', $name)) { return false; }
-        if (strlen($name) < 4) { return false; }
-
-        return true;
-    }
-
-    // allow integers between 26^12 + 1 and 256^8 (inclusive), prefixed with 'A'
-    protected function isValidFreeAssetName($name) {
-        if (substr($name, 0, 1) != 'A') { return false; }
-
-        $number_string = substr($name, 1);
-        if (!preg_match('!^\\d+$!', $number_string)) { return false; }
-        if (gmp_cmp($number_string, "95428956661682201") < 0) { return false; }
-        if (gmp_cmp($number_string, "18446744073709600000") > 0) { return false; }
-
-        return true;
     }
 
     

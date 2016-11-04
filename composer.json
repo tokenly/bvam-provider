@@ -15,7 +15,8 @@
         "tokenly/xchain-client": "^0.4.1",
         "tokenly/laravel-xchain-receive-queue": "^0.1.1",
         "pda/pheanstalk": "~3.0",
-        "tokenly/laravel-blocking-beanstalkd": "dev-master"
+        "tokenly/laravel-blocking-beanstalkd": "dev-master",
+        "tokenly/asset-name-utils": "^0.2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

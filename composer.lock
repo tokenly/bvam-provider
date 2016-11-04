@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "36a57cb9593b4a9b92cb32efbc843e9a",
-    "content-hash": "d20a2ab0ef2282cf088c98c912392644",
+    "hash": "91c4d9c16c9b29be76403137245b80cb",
+    "content-hash": "b2a9efd602b535443e2d0398f5e604a2",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2538,6 +2538,46 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2016-07-17 14:02:08"
+        },
+        {
+            "name": "tokenly/asset-name-utils",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tokenly/asset-name-utils.git",
+                "reference": "14a88982723ad700a06066f404a2fb75b1a6d789"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tokenly/asset-name-utils/zipball/14a88982723ad700a06066f404a2fb75b1a6d789",
+                "reference": "14a88982723ad700a06066f404a2fb75b1a6d789",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tokenly\\AssetNameUtils\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Devon Weller",
+                    "email": "devon@tokenly.com",
+                    "homepage": "http://tokenly.com"
+                }
+            ],
+            "description": "A library to validate Counterparty asset names",
+            "time": "2016-11-04 14:49:53"
         },
         {
             "name": "tokenly/bitcoin-currency-lib",
