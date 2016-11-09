@@ -57,6 +57,9 @@ class TokenResourceController extends ApiController
         foreach($asset_names as $offset => $asset_name) {
             $asset_info = $asset_infos[$offset];
 
+            // don't build null results for non-existent assets
+            if (!$asset_info) { continue; }
+
             // find the bvam data by token name
             $bvam = $bvam_repository->findByActiveBvamByAsset($asset_name);
 

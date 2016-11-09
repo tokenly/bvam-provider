@@ -92,13 +92,14 @@ class AssetInfoCache
                         if ($enhanced_info['had_error']) {
                             $cache_length = min($cache_length, self::ERROR_CACHE_LENGTH_MINUTES);
                         }
+
+                        $responses_by_asset_name[$info['asset']] = $info;
                     } else {
                         // asset didn't exist in counterparty yet
                         $info = [];
                         $cache_length = min($cache_length, self::NOT_FOUND_CACHE_LENGTH_MINUTES);
                     }
 
-                    $responses_by_asset_name[$info['asset']] = $info;
                 }
 
             } catch (Exception $e) {
