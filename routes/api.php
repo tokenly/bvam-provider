@@ -13,35 +13,34 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'api/v1'], function() {
 
     // all BVAMs
-    Route::get('/bvam/all', 'BvamController@listBvam')
+    Route::match(['GET',  'OPTIONS'], '/bvam/all', 'BvamController@listBvam')
         ->name('bvam.list');
 
     // all categories
-    Route::get('/category/all', 'BvamController@listBvamCategories')
+    Route::match(['GET',  'OPTIONS'], '/category/all', 'BvamController@listBvamCategories')
         ->name('category.list');
 
     // Lookup by asset name
-    Route::get('/asset/{asset_name}', 'TokenResourceController@getTokenInfo')
+    Route::match(['GET',  'OPTIONS'], '/asset/{asset_name}', 'TokenResourceController@getTokenInfo')
         ->name('tokenresource.get');
 
     // Lookup multiple assets by name
-    Route::get('/assets', 'TokenResourceController@getMultipleTokenInfo')
+    Route::match(['GET',  'OPTIONS'], '/assets', 'TokenResourceController@getMultipleTokenInfo')
         ->name('tokenresource.getMultiple');
 
 
     // create a new bvam
-    Route::post('/bvam', 'BvamController@create')
+    Route::match(['POST', 'OPTIONS'], '/bvam', 'BvamController@create')
         ->name('bvam.create');
 
     // create a new category
-    Route::post('/category', 'BvamController@createCategory')
+    Route::match(['POST', 'OPTIONS'], '/category', 'BvamController@createCategory')
         ->name('bvam.createCategory');
-
 });
 
 // Lookup by hash or signature filename
 //   at URL /
-Route::get('/{filename}', 'BvamResourceController@getResource')
+Route::match(['GET',  'OPTIONS'], '/{filename}', 'BvamResourceController@getResource')
     ->name('bvamresource.get');
 
 
